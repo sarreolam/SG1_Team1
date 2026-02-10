@@ -1,0 +1,17 @@
+BATTERY_CAPACITY = 5 #Kwh
+SOLAR_PANEL_CAPACITY = 5 #kwh
+MAX_INVERTER_OUTPUT = 5 #kwh
+BASE_LOAD = 0.9
+PEAK_LOAD = 3.5
+VARIABILITY = 1.1
+MANAGEMENT_STRATEGY = "load_priority"
+SIMULATION_DURATION = 86400 # En minutos (60 dias)
+TIMESTEP = 30 #En minutos
+CAN_EXPORT = True
+GRID_EXPORT_LIMIT = 5 #kw
+ROUND_TRIP_EFFICIENCY = 0.1
+INVERTER_FAILURE_FREQUENCY = 0.05
+INVERTER_FAILURE_DURATION = 7 #En horas, o sea, 14 time steps
+SEASON = "summer"
+COST_OF_ENERGY = 0.05 #En dolares/kw exportado, aka, 5 centavos por kW exportado
+SOLAR_PEAK = 5
