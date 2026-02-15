@@ -3,19 +3,19 @@ import csv
 import random
 import simpy
 from solar_model import sample_cloud_coverage, solar_generation_kw
-from Configs import config1
+from Configs import config1 as config
 
-# --------- Helper / Parameters (tune via Configs/config1.py) ---------
-BATTERY_CAP_KWH = getattr(config1, "BATTERY_CAPACITY", 5.0)
+# --------- Helper / Parameters (tune via Configs/config.py) ---------
+BATTERY_CAP_KWH = getattr(config, "BATTERY_CAPACITY", 5.0)
 BATTERY_MIN_SOC_FRAC = 0.05
-ROUND_TRIP = getattr(config1, "ROUND_TRIP_EFFICIENCY", 0.1)
-INVESTER_MAX_KW = getattr(config1, "MAX_INVERTER_OUTPUT", 5.0)
-TIMESTEP_MIN = getattr(config1, "TIMESTEP", 30)
-SIM_TOTAL_MIN = getattr(config1, "SIMULATION_DURATION", 1440)
-CAN_EXPORT = getattr(config1, "CAN_EXPORT", True)
-GRID_EXPORT_LIMIT_KW = getattr(config1, "GRID_EXPORT_LIMIT", 5.0)
-INVERTER_FAILURE_FREQ = getattr(config1, "INVERTER_FAILURE_FREQUENCY", 0.05)
-INVERTER_FAILURE_MIN_H = getattr(config1, "INVERTER_FAILURE_DURATION", 7)
+ROUND_TRIP = getattr(config, "ROUND_TRIP_EFFICIENCY", 0.1)
+INVESTER_MAX_KW = getattr(config, "MAX_INVERTER_OUTPUT", 5.0)
+TIMESTEP_MIN = getattr(config, "TIMESTEP", 30)
+SIM_TOTAL_DAY = getattr(config, "SIMULATION_DURATION", 1440)
+CAN_EXPORT = getattr(config, "CAN_EXPORT", True)
+GRID_EXPORT_LIMIT_KW = getattr(config, "GRID_EXPORT_LIMIT", 5.0)
+INVERTER_FAILURE_FREQ = getattr(config, "INVERTER_FAILURE_FREQUENCY", 0.05)
+INVERTER_FAILURE_MIN_H = getattr(config, "INVERTER_FAILURE_DURATION", 7)
 
 OUTPUT_DIR = "output"
 OUTPUT_CSV = os.path.join(OUTPUT_DIR, "log.csv")
@@ -23,7 +23,7 @@ OUTPUT_CSV = os.path.join(OUTPUT_DIR, "log.csv")
 # --------- Simple demand model ---------
 def sample_load_kw(env_now_min):
     hour = int((env_now_min // 60) % 24)
-    load = getattr(config1, "BASE_LOAD", 0.9)
+    load = getattr(config, "BASE_LOAD", 0.9)
     
     # morning bump
     if 7 <= hour < 9:
@@ -33,7 +33,7 @@ def sample_load_kw(env_now_min):
         load += 0.8
     # random spike occasionally
     if random.random() < 0.05:
-        load += random.uniform(0.0, getattr(config1, "PEAK_LOAD", 3.5))
+        load += random.uniform(0.0, getattr(config, "PEAK_LOAD", 3.5))
     load += random.uniform(-0.1, 0.2)
     return max(0.0, load)
 
@@ -42,7 +42,7 @@ class SimpleGreenGrid:
     def __init__(self, env, start_soc_frac=0.5, season=None):
         self.env = env
         self.battery_soc = BATTERY_CAP_KWH * start_soc_frac
-        self.season = season or getattr(config1, "SEASON", "summer")
+        self.season = season or getattr(config, "SEASON", "summer")
         self.cloud_today = sample_cloud_coverage(self.season)
         self.inverter_down_until = -1
         self.log = []
@@ -89,7 +89,7 @@ class SimpleGreenGrid:
             # charge battery first
             space_kwh = BATTERY_CAP_KWH - self.battery_soc
             # charge energy taken from net before efficiency loss
-            charge_input = min(net, space_kwh)
+            charge_input = min(net_kwh, space_kwh)
             # only part sorted due to efficiency loss
             stored_kwh = charge_input * ROUND_TRIP
             self.battery_soc += stored_kwh
@@ -146,7 +146,7 @@ class SimpleGreenGrid:
 # ---- RUN HELPER ----
 def run_simulation(days=None):
     dt = TIMESTEP_MIN
-    total_min = SIM_TOTAL_MIN if days is None else days * 24 * 60
+    total_min = SIM_TOTAL_DAY * 24 * 60 if days is None else days * 24 * 60
 
     env = simpy.Environment()
     plant = SimpleGreenGrid(env, start_soc_frac=0.5)

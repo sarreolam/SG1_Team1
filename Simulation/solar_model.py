@@ -1,6 +1,6 @@
 import random
 import math
-from Configs import config1
+from Configs import config1 as config
 
 
 SEASON_WEIGHTS = {
@@ -44,9 +44,9 @@ def solar_generation_kw(env_now_min: int, cloud_coverage: float, inverter_down: 
     hour = int((env_now_min // 60) % 24)
 
     sun_angle = (hour - 6) * (math.pi / 12.0)
-    ideal = config1.SOLAR_PEAK * max(0.0, math.sin(sun_angle))
+    ideal = config.SOLAR_PEAK * max(0.0, math.sin(sun_angle))
 
 
     actual = ideal * (1.0 - cloud_coverage)
 
-    return min(actual, float(config1.MAX_INVERTER_OUTPUT))
+    return min(actual, float(config.MAX_INVERTER_OUTPUT))
