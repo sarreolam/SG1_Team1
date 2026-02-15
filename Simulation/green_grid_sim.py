@@ -8,17 +8,19 @@ from Configs import config1 as config
 # --------- Helper / Parameters (tune via Configs/config.py) ---------
 BATTERY_CAP_KWH = getattr(config, "BATTERY_CAPACITY", 5.0)
 BATTERY_MIN_SOC_FRAC = 0.05
-ROUND_TRIP = getattr(config, "ROUND_TRIP_EFFICIENCY", 0.1)
+ROUND_TRIP = getattr(config, "ROUND_TRIP_EFFICIENCY", 0.9)
 INVESTER_MAX_KW = getattr(config, "MAX_INVERTER_OUTPUT", 5.0)
 TIMESTEP_MIN = getattr(config, "TIMESTEP", 30)
-SIM_TOTAL_DAY = getattr(config, "SIMULATION_DURATION", 1440)
+SIM_TOTAL_DAY = getattr(config, "SIMULATION_DURATION", 1)
 CAN_EXPORT = getattr(config, "CAN_EXPORT", True)
 GRID_EXPORT_LIMIT_KW = getattr(config, "GRID_EXPORT_LIMIT", 5.0)
 INVERTER_FAILURE_FREQ = getattr(config, "INVERTER_FAILURE_FREQUENCY", 0.05)
 INVERTER_FAILURE_MIN_H = getattr(config, "INVERTER_FAILURE_DURATION", 7)
+MANAGEMENT_STRATEGY = getattr(config, "MANAGEMENT_STRATEGY", "load_priority")
 
 OUTPUT_DIR = "output"
 OUTPUT_CSV = os.path.join(OUTPUT_DIR, "log.csv")
+EVENTS_CSV = os.path.join(OUTPUT_DIR, "events.csv")
 
 # --------- Simple demand model ---------
 def sample_load_kw(env_now_min):
@@ -39,13 +41,25 @@ def sample_load_kw(env_now_min):
 
 # ---- Model class ---------
 class SimpleGreenGrid:
-    def __init__(self, env, start_soc_frac=0.5, season=None):
+    def __init__(self, env, start_soc_frac=0.5, season=None, strategy=None):
         self.env = env
         self.battery_soc = BATTERY_CAP_KWH * start_soc_frac
         self.season = season or getattr(config, "SEASON", "summer")
         self.cloud_today = sample_cloud_coverage(self.season)
         self.inverter_down_until = -1
+        self.strategy = strategy or MANAGEMENT_STRATEGY
+        
         self.log = []
+        self.events = []
+
+        self.total_charge_cycles = 0
+        self.total_discharge_cycles = 0
+        self.last_was_charging = False
+        self.last_was_discharging = False
+        self.peak_battery_soc = start_soc_frac * BATTERY_CAP_KWH
+        self.min_battery_soc = start_soc_frac * BATTERY_CAP_KWH
+
+        self._log_event("SIMULATION START", f"Strategy: {self.strategy}, Season: {self.season}")
 
     def inverter_ok(self):
         return self.env.now >= self.inverter_down_until
@@ -56,8 +70,83 @@ class SimpleGreenGrid:
             # failure duration sample (hours)
             dur_h = max(1.0, random.gauss(INVERTER_FAILURE_MIN_H, INVERTER_FAILURE_MIN_H * 0.5))
             self.inverter_down_until = self.env.now + int(dur_h * 60)
+            self._log_event("INVERTER FAILURE", f"Duration: {dur_h:.2f} hours, until minute {self.inverter_down_until}")
             return True, dur_h
         return False, 0.0
+    
+    def _log_event(self, event_type, description):
+        self.events.append({
+            "time_min": int(self.env.now),
+            "hour": int((self.env.now // 60) % 24),
+            "event_type": event_type,
+            "description": description
+        })
+
+    def _track_battery_cycles(self, is_charging, is_discharging):
+        if is_charging and not self.last_was_charging:
+            self.total_charge_cycles += 1
+            self._log_event("BATTERY CHARGE START", f"Cycle #{self.total_charge_cycles}")
+
+        if is_discharging and not self.last_was_discharging:
+            self.total_discharge_cycles += 1
+            self._log_event("BATTERY DISCHARGE START", f"Cycle #{self.total_discharge_cycles}")
+
+        self.last_was_charging = is_charging
+        self.last_was_discharging = is_discharging
+
+    def _apply_strategy_surplus(self, net_kwh, dt_h):
+        space_kwh = BATTERY_CAP_KWH - self.battery_soc
+        grid_export_kwh = 0.0
+        battery_charged_kwh = 0.0
+
+        if self.strategy == "load_priority":
+            # Default: charge battery first, then export
+            charge_input = min(net_kwh, space_kwh / ROUND_TRIP)
+            stored_kwh = charge_input * ROUND_TRIP
+            self.battery_soc += stored_kwh
+            battery_charged_kwh = stored_kwh
+
+            leftover_kwh = net_kwh - charge_input
+            if CAN_EXPORT and leftover_kwh > 1e-9:
+                export_kw_possible = min(leftover_kwh / dt_h if dt_h > 0 else 0.0, GRID_EXPORT_LIMIT_KW) 
+                grid_export_kwh = export_kw_possible * dt_h
+
+        elif self.strategy == "battery_priority":
+            # Charge battery as much as possible, then export leftovers
+            charge_input = min(net_kwh, space_kwh / ROUND_TRIP)
+            stored_kwh = charge_input * ROUND_TRIP
+            self.battery_soc += stored_kwh
+            battery_charged_kwh = stored_kwh
+
+            leftover_kwh = net_kwh - charge_input
+            if CAN_EXPORT and leftover_kwh > 1e-9 and self.battery_soc >= BATTERY_CAP_KWH * 0.99:
+                export_kw_possible = min(leftover_kwh / dt_h if dt_h > 0 else 0.0, GRID_EXPORT_LIMIT_KW) 
+                grid_export_kwh = export_kw_possible * dt_h
+        
+        elif self.strategy == "export_priority":
+            # Export first, then charge battery with leftovers
+            max_export_kwh = GRID_EXPORT_LIMIT_KW * dt_h
+
+            if CAN_EXPORT and net_kwh > max_export_kwh:
+                grid_export_kwh = max_export_kwh
+                remaining = net_kwh - max_export_kwh
+                charge_input = min(remaining, space_kwh / ROUND_TRIP)
+                stored_kwh = charge_input * ROUND_TRIP
+                self.battery_soc += stored_kwh
+                battery_charged_kwh = stored_kwh
+            elif CAN_EXPORT:
+                grid_export_kwh = net_kwh
+            else:
+                charge_input = min(net_kwh, space_kwh / ROUND_TRIP)
+                stored_kwh = charge_input * ROUND_TRIP
+                self.battery_soc += stored_kwh
+                battery_charged_kwh = stored_kwh
+
+        else:
+            raise ValueError(f"Unkown strategy: {self.strategy}")
+        
+        return grid_export_kwh, battery_charged_kwh
+            
 
     def step(self, dt_min):
         """Single timestep energy balance. dt_min in minutes."""
@@ -68,7 +157,11 @@ class SimpleGreenGrid:
         # daily update at midnight
         if t % (24 * 60) == 0:
             self.cloud_today = sample_cloud_coverage(self.season)
+            self._log_event("DAILY UPDATE", f"New cloud coverage: {self.cloud_today:.2f}")
             self.maybe_inverter_failure()
+
+        if self.inverter_down_until == t and self.inverter_down_until > 0:
+            self._log_event("INVERTER RECOVERY", "Inverter is back online")
 
         # measure
         solar_kw = solar_generation_kw(int(self.env.now), self.cloud_today, inverter_down=(not self.inverter_ok()))
@@ -78,26 +171,18 @@ class SimpleGreenGrid:
         energy_gen_kwh = usable_solar_kw * dt_h
         energy_load_kwh = load_kw * dt_h
 
+        # metrics tracking
         grid_import_kwh = 0.0
         grid_export_kwh = 0.0
+        unmet_load_kwh = 0.0
+        battery_charged_kwh = 0.0
+        battery_discharged_kwh = 0.0
 
         net_kwh = energy_gen_kwh - energy_load_kwh
-
         battery_before = self.battery_soc
 
         if net_kwh > 0:
-            # charge battery first
-            space_kwh = BATTERY_CAP_KWH - self.battery_soc
-            # charge energy taken from net before efficiency loss
-            charge_input = min(net_kwh, space_kwh)
-            # only part sorted due to efficiency loss
-            stored_kwh = charge_input * ROUND_TRIP
-            self.battery_soc += stored_kwh
-            leftover_kwh = net_kwh - charge_input
-            if CAN_EXPORT and leftover_kwh > 1e-9:
-                # export limited by GRID_EXPORT_LIMIT_KW
-                export_kw_possible = min(leftover_kwh / dt_h if dt_h > 0 else 0.0, GRID_EXPORT_LIMIT_KW)
-                grid_export_kwh = export_kw_possible * dt_h
+            grid_export_kwh, battery_charged_kwh = self._apply_strategy_surplus(net_kwh, dt_h)
         else:
             need = -net_kwh
             available_kwh = max(0.0, self.battery_soc - BATTERY_CAP_KWH * BATTERY_MIN_SOC_FRAC)
@@ -111,17 +196,33 @@ class SimpleGreenGrid:
                 supplied_kwh = 0.0
             
             self.battery_soc -= discharge_needed_kwh
+            battery_discharged_kwh = discharge_needed_kwh
+
             remaining_need_kwh = need - supplied_kwh
             if remaining_need_kwh > 1e-9:
                 grid_import_kwh = remaining_need_kwh
         
+        # Limits and validations
         # clamp battery
         self.battery_soc = min(max(0.0, self.battery_soc), BATTERY_CAP_KWH)
 
+        if self.battery_soc > self.peak_battery_soc:
+            self.peak_battery_soc = self.battery_soc
+            if self.battery_soc >= BATTERY_CAP_KWH * 0.99:
+                self._log_event("BATTERY FULL", f"SoC: {self.battery_soc:.4f} kWh")
+
+        if self.battery_soc < self.min_battery_soc:
+            self.min_battery_soc = self.battery_soc
+            if self.battery_soc <= BATTERY_CAP_KWH * BATTERY_MIN_SOC_FRAC * 1.01:
+                self._log_event("BATTERY LOW", f"SoC: {self.battery_soc:.4f} kWh")
+
+        is_charging = battery_charged_kwh > 1e-9
+        is_discharging = battery_discharged_kwh > 1e-9
+        self._track_battery_cycles(is_charging, is_discharging)
+
         # If net was negative (we should discharge) but SoC increased, flag it
         if net_kwh < -1e-9 and self.battery_soc > battery_before + 1e-6:
-            print("WARNING: SoC increased despite deficit at time", self.env.now,
-                  "net_kwh", net_kwh, "batt_before", battery_before, "batt_after", self.battery_soc)
+            self._log_event("WARNING", f"SoC increased during deficit. net={net_kwh:.6f}, before={battery_before:.6f}, after={self.battery_soc:.6f}")
 
         self.log.append({
             "time_min": int(self.env.now),
@@ -130,11 +231,17 @@ class SimpleGreenGrid:
             "load_kw": round(load_kw, 4),
             "energy_gen_kwh": round(energy_gen_kwh, 6),
             "energy_load_kwh": round(energy_load_kwh, 6),
+            "net_kwh": round(net_kwh, 6),
             "battery_soc_kwh": round(self.battery_soc, 6),
+            "battery_soc_pct": round(self.battery_soc / BATTERY_CAP_KWH * 100, 2),
+            "battery_charged_kwh": round(battery_charged_kwh, 6),
+            "battery_discharged_kwh": round(battery_discharged_kwh, 6),
             "grid_import_kwh": round(grid_import_kwh, 6),
             "grid_export_kwh": round(grid_export_kwh, 6),
+            "unmet_load_kwh": round(unmet_load_kwh, 6),
             "inverter_ok": self.inverter_ok(),
-            "cloud": round(self.cloud_today, 4)
+            "cloud": round(self.cloud_today, 4),
+            "strategy": self.strategy
         })
 
     def run(self, dt_min, total_min):
@@ -143,13 +250,34 @@ class SimpleGreenGrid:
             self.step(dt_min)
             yield self.env.timeout(dt_min)
 
+        self._log_event("SIMULATION END", 
+                        f"Total charge cycles: {self.total_charge_cycles}, "
+                        f"Total discharge cycles: {self.total_discharge_cycles}, "
+                        f"Peak SoC: {self.peak_battery_soc:.4f} kWh, "
+                        f"Min SoC: {self.min_battery_soc:.4f} kWh")
+
 # ---- RUN HELPER ----
-def run_simulation(days=None):
+def run_simulation(days=None, strategy=None):
     dt = TIMESTEP_MIN
-    total_min = SIM_TOTAL_DAY * 24 * 60 if days is None else days * 24 * 60
+    
+    if SIM_TOTAL_DAY is not None:
+        total_min = SIM_TOTAL_DAY * 24 * 60
+        print(f"Simulando {SIM_TOTAL_DAY} día(s) = {total_min} minutos")
+    elif days is not None:
+        total_min = days * 24 * 60
+        print(f"Simulando {days} día(s) = {total_min} minutos")
+    
+    strat = strategy or MANAGEMENT_STRATEGY
+    print(f"Estrategia: {strat}")
+    print(f"Timestep: {dt} minutos")
+    print(f"Total timesteps: {total_min // dt}")
+    print(f"Capacidad batería: {BATTERY_CAP_KWH} kWh")
+    print(f"Eficiencia round-trip: {ROUND_TRIP*100}%")
+    print(f"Temporada: {getattr(config, 'SEASON', 'summer')}")
+    print("-" * 70)
 
     env = simpy.Environment()
-    plant = SimpleGreenGrid(env, start_soc_frac=0.5)
+    plant = SimpleGreenGrid(env, start_soc_frac=0.5, strategy=strat)
     env.process(plant.run(dt, total_min))
     env.run()
 
@@ -161,10 +289,28 @@ def run_simulation(days=None):
         writer.writeheader()
         for r in plant.log:
             writer.writerow(r)
+
+    with open(EVENTS_CSV, "w", newline="") as f:
+        if plant.events:
+            fieldnames = list(plant.events[0].keys())
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            for e in plant.events:
+                writer.writerow(e)
+
+    print(f"Simulación terminada")
+    print(f"Log principal: {OUTPUT_CSV} ({len(plant.log)} registros)")
+    print(f"Eventos: {EVENTS_CSV} ({len(plant.events)} eventos)")
+    print(f"Ciclos de carga: {plant.total_charge_cycles}")
+    print(f"Ciclos de descarga: {plant.total_discharge_cycles}")
+    print(f"SoC pico: {plant.peak_battery_soc:.4f} kWh ({plant.peak_battery_soc/BATTERY_CAP_KWH*100:.1f}%)")
+    print(f"SoC mínimo: {plant.min_battery_soc:.4f} kWh ({plant.min_battery_soc/BATTERY_CAP_KWH*100:.1f}%)")
+    print("-" * 70)
     
     print("Simulation finished. CSV: ", OUTPUT_CSV)
 
 
 if __name__ == "__main__":
-    run_simulation(days=1)
-
+    run_simulation(days=1, strategy="load_priority")
+    # run_simulation(days=1, strategy="battery_first")
+    # run_simulation(days=1, strategy="export_priority")
