@@ -41,10 +41,10 @@ def solar_generation_kw(env_now_min: int, cloud_coverage: float, inverter_down: 
     if inverter_down:
         return 0.0
 
-    hour = int((env_now_min // 60) % 24)
+    t_hours = (env_now_min % (24*60)) / 60.0
+    sun_angle = (t_hours - 6.0) * (math.pi / 12.0)
 
-    sun_angle = (hour - 6) * (math.pi / 12.0)
-    ideal = config.SOLAR_PEAK * max(0.0, math.sin(sun_angle))
+    ideal = config.SOLAR_PANEL_CAPACITY * max(0.0, math.sin(sun_angle))
 
 
     actual = ideal * (1.0 - cloud_coverage)
