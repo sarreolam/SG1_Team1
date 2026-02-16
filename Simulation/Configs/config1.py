@@ -13,12 +13,12 @@ GRID_EXPORT_LIMIT = 20 #kw
 EXPORTED_ENERGY_COST = 0.009 # $/kWh  cents
 IMPORTED_ENERGY_COST = 0.0075 # $/kWh  cents
 
-INVERTER_FAILURE_FREQUENCY = 0.005
-INVERTER_FAILURE_DURATION = 36 #En horas
+INVERTER_FAILURE_FREQUENCY = 0.05
+INVERTER_FAILURE_DURATION = 36 # In hours
 
 MONTH_LENGTH_DAYS = 30
 
-SIMULATION_DURATION = 15 
+SIMULATION_DURATION = 30
 TIMESTEP = 60  #En minutos
-SEASON = "winter"
-MANAGEMENT_STRATEGY = "produce_priority" # "load_priority" | "charge_priority" | "produce_priority"
+SEASON = "winter" # "spring" | "summer" | "autumn" | "winter"
+MANAGEMENT_STRATEGY = "charge_priority" # "load_priority" | "charge_priority" | "produce_priority"

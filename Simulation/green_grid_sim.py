@@ -366,19 +366,19 @@ def run_simulation(days=None):
     
     if SIM_TOTAL_DAY is not None:
         total_min = SIM_TOTAL_DAY * 24 * 60
-        print(f"Simulando {SIM_TOTAL_DAY} día(s) = {total_min} minutos")
+        print(f"Simulating {SIM_TOTAL_DAY} day(s) = {total_min} minutes")
     elif days is not None:
         total_min = days * 24 * 60
-        print(f"Simulando {days} día(s) = {total_min} minutos")
+        print(f"Simulating {days} day(s) = {total_min} minutes")
     
     strat = MANAGEMENT_STRATEGY or "load_priority"
-    print(f"Estrategia: {strat}")
-    print(f"Timestep: {dt} minutos")
+    print(f"Strategy: {strat}")
+    print(f"Timestep: {dt} minutes")
     print(f"Total timesteps: {total_min // dt}")
-    print(f"Capacidad batería: {BATTERY_CAP_KWH} kWh")
-    print(f"Eficiencia round-trip: {ROUND_TRIP*100}%")
-    print(f"Temporada: {getattr(config, 'SEASON', 'summer')}")
-    print(f"Modo de exportación: {GRID_EXPORT_LIMIT} kW limit")
+    print(f"Battery capacity: {BATTERY_CAP_KWH} kWh")
+    print(f"Round-trip efficiency: {ROUND_TRIP*100}%")
+    print(f"Season: {getattr(config, 'SEASON', 'summer')}")
+    print(f"Export mode: {GRID_EXPORT_LIMIT} kW limit")
     print("-" * 70)
 
     env = simpy.Environment()
@@ -403,18 +403,57 @@ def run_simulation(days=None):
             for e in plant.events:
                 writer.writerow(e)
 
-    print(f"Simulación terminada")
-    print(f"Log principal: {OUTPUT_CSV} ({len(plant.log)} registros)")
-    print(f"Eventos: {EVENTS_CSV} ({len(plant.events)} eventos)")
-    print(f"Ciclos de carga: {plant.total_charge_cycles}")
-    print(f"Ciclos de descarga: {plant.total_discharge_cycles}")
-    print(f"SoC pico: {plant.peak_battery_soc:.4f} kWh ({plant.peak_battery_soc/BATTERY_CAP_KWH*100:.1f}%)")
-    print(f"SoC mínimo: {plant.min_battery_soc:.4f} kWh ({plant.min_battery_soc/BATTERY_CAP_KWH*100:.1f}%)")
-    print(f"Energía solar curtailed: {plant.total_curtailed_kwh:.4f} kWh ({plant.total_curtailed_kwh/(total_min/60)*100:.2f}% loss)")
+    # ========== CALCULATE MONTHLY TOTALS ==========
+    total_solar_gen = sum(r['energy_gen_kwh'] for r in plant.log)
+    total_load = sum(r['energy_load_kwh'] for r in plant.log)
+    total_import = sum(r['grid_import_kwh'] for r in plant.log)
+    total_export = sum(r['grid_export_kwh'] for r in plant.log)
+    total_curtailed = sum(r['curtailed_kwh'] for r in plant.log)
+    total_import_cost = sum(r['import_cost'] for r in plant.log)
+    total_export_revenue = sum(r['export_revenue'] for r in plant.log)
+    net_balance = total_export_revenue - total_import_cost
+    
+    # Calculate performance indicators
+    solar_used = total_solar_gen - total_export
+    self_sufficiency_pct = (solar_used / total_load * 100) if total_load > 0 else 0
+    grid_dependency_pct = (total_import / total_load * 100) if total_load > 0 else 0
+
+    print(f"Simulation completed")
+    print(f"Main log: {OUTPUT_CSV} ({len(plant.log)} records)")
+    print(f"Events: {EVENTS_CSV} ({len(plant.events)} events)")
     print("-" * 70)
     
-    print("Simulation finished. CSV: ", OUTPUT_CSV)
+    print(f"\nENERGY SUMMARY ({SIM_TOTAL_DAY} days):")
+    print("=" * 70)
+    print(f"Total solar generated:        {total_solar_gen:>10.2f} kWh")
+    print(f"Total consumed:               {total_load:>10.2f} kWh")
+    print(f"Total grid import:            {total_import:>10.2f} kWh")
+    print(f"Total grid export:            {total_export:>10.2f} kWh")
+    print(f"Total curtailed (wasted):     {total_curtailed:>10.2f} kWh ({total_curtailed/total_solar_gen*100:.1f}% of generation)")
+    
+    print(f"\nECONOMIC BALANCE:")
+    print("=" * 70)
+    print(f"Cost of imported energy:      ${total_import_cost:>10.4f}")
+    print(f"Revenue from exported energy: ${total_export_revenue:>10.4f}")
+    print(f"Net balance:                  ${net_balance:>10.4f} {'(Loss)' if net_balance < 0 else '(Profit)'}")
+    
+    print(f"\nPERFORMANCE INDICATORS:")
+    print("=" * 70)
+    print(f"Self-sufficiency:             {self_sufficiency_pct:>10.1f}%")
+    print(f"Grid dependency:              {grid_dependency_pct:>10.1f}%")
+    print(f"Solar utilization efficiency: {(solar_used/total_solar_gen*100) if total_solar_gen > 0 else 0:>10.1f}%")
+    
+    print(f"\nBATTERY:")
+    print("=" * 70)
+    print(f"Charge cycles:                {plant.total_charge_cycles:>10}")
+    print(f"Discharge cycles:             {plant.total_discharge_cycles:>10}")
+    print(f"Peak SoC:                     {plant.peak_battery_soc:>10.4f} kWh ({plant.peak_battery_soc/BATTERY_CAP_KWH*100:.1f}%)")
+    print(f"Minimum SoC:                  {plant.min_battery_soc:>10.4f} kWh ({plant.min_battery_soc/BATTERY_CAP_KWH*100:.1f}%)")
+    
+    print("\n" + "=" * 70)
+    print(f"Files saved: {OUTPUT_CSV}, {EVENTS_CSV}")
+    print("=" * 70)
 
 
 if __name__ == "__main__":
-    run_simulation(days=1)
+    run_simulation()

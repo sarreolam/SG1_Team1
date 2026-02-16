@@ -5,7 +5,7 @@ from Configs import config1 as config
 
 SEASON_WEIGHTS = {
     "spring": (0.1, 0.3, 0.4, 0.2),
-    "summer": (0.05, 0.15, 0.3, 0.5),
+    "summer": (0.5, 0.3, 0.15, 0.05),
     "fall":   (0.2, 0.4, 0.3, 0.1),
     "winter": (0.3, 0.4, 0.2, 0.1),
 }
