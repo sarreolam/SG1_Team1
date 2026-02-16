@@ -14,6 +14,7 @@ TIMESTEP_MIN = getattr(config, "TIMESTEP", 30)
 SIM_TOTAL_DAY = getattr(config, "SIMULATION_DURATION", 1)
 CAN_EXPORT = getattr(config, "CAN_EXPORT", True)
 GRID_EXPORT_LIMIT_KW = getattr(config, "GRID_EXPORT_LIMIT", 5.0)
+ZERO_EXPORT_MODE = getattr(config, "ZERO_EXPORT_MODE", False)  # New: prevents any export
 INVERTER_FAILURE_FREQ = getattr(config, "INVERTER_FAILURE_FREQUENCY", 0.05)
 INVERTER_FAILURE_MIN_H = getattr(config, "INVERTER_FAILURE_DURATION", 7)
 MANAGEMENT_STRATEGY = getattr(config, "MANAGEMENT_STRATEGY", "load_priority")
@@ -58,8 +59,13 @@ class SimpleGreenGrid:
         self.last_was_discharging = False
         self.peak_battery_soc = start_soc_frac * BATTERY_CAP_KWH
         self.min_battery_soc = start_soc_frac * BATTERY_CAP_KWH
+        
+        # New: track curtailment
+        self.total_curtailed_kwh = 0.0
 
-        self._log_event("SIMULATION START", f"Strategy: {self.strategy}, Season: {self.season}")
+        export_mode = "ZERO EXPORT" if ZERO_EXPORT_MODE else f"Limited to {GRID_EXPORT_LIMIT_KW} kW" if CAN_EXPORT else "NO EXPORT"
+        self._log_event("SIMULATION START", 
+                       f"Strategy: {self.strategy}, Season: {self.season}, Export: {export_mode}")
 
     def inverter_ok(self):
         return self.env.now >= self.inverter_down_until
@@ -95,9 +101,17 @@ class SimpleGreenGrid:
         self.last_was_discharging = is_discharging
 
     def _apply_strategy_surplus(self, net_kwh, dt_h):
+        """
+        Handle surplus energy based on strategy and grid constraints.
+        Returns: (grid_export_kwh, battery_charged_kwh, curtailed_kwh)
+        """
         space_kwh = BATTERY_CAP_KWH - self.battery_soc
         grid_export_kwh = 0.0
         battery_charged_kwh = 0.0
+        curtailed_kwh = 0.0
+        
+        # Check if export is allowed
+        can_export_to_grid = CAN_EXPORT and not ZERO_EXPORT_MODE
 
         if self.strategy == "load_priority":
             # Default: charge battery first, then export
@@ -107,9 +121,17 @@ class SimpleGreenGrid:
             battery_charged_kwh = stored_kwh
 
             leftover_kwh = net_kwh - charge_input
-            if CAN_EXPORT and leftover_kwh > 1e-9:
-                export_kw_possible = min(leftover_kwh / dt_h if dt_h > 0 else 0.0, GRID_EXPORT_LIMIT_KW) 
-                grid_export_kwh = export_kw_possible * dt_h
+            if leftover_kwh > 1e-9:
+                if can_export_to_grid:
+                    export_kw_possible = min(leftover_kwh / dt_h if dt_h > 0 else 0.0, GRID_EXPORT_LIMIT_KW)
+                    grid_export_kwh = export_kw_possible * dt_h
+                    curtailed_kwh = leftover_kwh - grid_export_kwh
+                else:
+                    # Cannot export - must curtail
+                    curtailed_kwh = leftover_kwh
+                    if curtailed_kwh > 0.01:  # Only log significant curtailment
+                        self._log_event("SOLAR CURTAILMENT", 
+                                      f"Battery full, cannot export: {curtailed_kwh:.4f} kWh wasted")
 
         elif self.strategy == "battery_priority":
             # Charge battery as much as possible, then export leftovers
@@ -119,33 +141,47 @@ class SimpleGreenGrid:
             battery_charged_kwh = stored_kwh
 
             leftover_kwh = net_kwh - charge_input
-            if CAN_EXPORT and leftover_kwh > 1e-9 and self.battery_soc >= BATTERY_CAP_KWH * 0.99:
-                export_kw_possible = min(leftover_kwh / dt_h if dt_h > 0 else 0.0, GRID_EXPORT_LIMIT_KW) 
-                grid_export_kwh = export_kw_possible * dt_h
+            if leftover_kwh > 1e-9 and self.battery_soc >= BATTERY_CAP_KWH * 0.99:
+                if can_export_to_grid:
+                    export_kw_possible = min(leftover_kwh / dt_h if dt_h > 0 else 0.0, GRID_EXPORT_LIMIT_KW)
+                    grid_export_kwh = export_kw_possible * dt_h
+                    curtailed_kwh = leftover_kwh - grid_export_kwh
+                else:
+                    curtailed_kwh = leftover_kwh
+                    if curtailed_kwh > 0.01:
+                        self._log_event("SOLAR CURTAILMENT", 
+                                      f"Battery full, cannot export: {curtailed_kwh:.4f} kWh wasted")
         
         elif self.strategy == "export_priority":
             # Export first, then charge battery with leftovers
             max_export_kwh = GRID_EXPORT_LIMIT_KW * dt_h
 
-            if CAN_EXPORT and net_kwh > max_export_kwh:
-                grid_export_kwh = max_export_kwh
-                remaining = net_kwh - max_export_kwh
-                charge_input = min(remaining, space_kwh / ROUND_TRIP)
-                stored_kwh = charge_input * ROUND_TRIP
-                self.battery_soc += stored_kwh
-                battery_charged_kwh = stored_kwh
-            elif CAN_EXPORT:
-                grid_export_kwh = net_kwh
+            if can_export_to_grid:
+                if net_kwh > max_export_kwh:
+                    grid_export_kwh = max_export_kwh
+                    remaining = net_kwh - max_export_kwh
+                    charge_input = min(remaining, space_kwh / ROUND_TRIP)
+                    stored_kwh = charge_input * ROUND_TRIP
+                    self.battery_soc += stored_kwh
+                    battery_charged_kwh = stored_kwh
+                    curtailed_kwh = remaining - charge_input
+                else:
+                    grid_export_kwh = net_kwh
             else:
+                # Cannot export - charge battery instead
                 charge_input = min(net_kwh, space_kwh / ROUND_TRIP)
                 stored_kwh = charge_input * ROUND_TRIP
                 self.battery_soc += stored_kwh
                 battery_charged_kwh = stored_kwh
+                curtailed_kwh = net_kwh - charge_input
+                if curtailed_kwh > 0.01:
+                    self._log_event("SOLAR CURTAILMENT", 
+                                  f"Cannot export, battery full: {curtailed_kwh:.4f} kWh wasted")
 
         else:
-            raise ValueError(f"Unkown strategy: {self.strategy}")
+            raise ValueError(f"Unknown strategy: {self.strategy}")
         
-        return grid_export_kwh, battery_charged_kwh
+        return grid_export_kwh, battery_charged_kwh, curtailed_kwh
             
 
     def step(self, dt_min):
@@ -177,12 +213,14 @@ class SimpleGreenGrid:
         unmet_load_kwh = 0.0
         battery_charged_kwh = 0.0
         battery_discharged_kwh = 0.0
+        curtailed_kwh = 0.0
 
         net_kwh = energy_gen_kwh - energy_load_kwh
         battery_before = self.battery_soc
 
         if net_kwh > 0:
-            grid_export_kwh, battery_charged_kwh = self._apply_strategy_surplus(net_kwh, dt_h)
+            grid_export_kwh, battery_charged_kwh, curtailed_kwh = self._apply_strategy_surplus(net_kwh, dt_h)
+            self.total_curtailed_kwh += curtailed_kwh
         else:
             need = -net_kwh
             available_kwh = max(0.0, self.battery_soc - BATTERY_CAP_KWH * BATTERY_MIN_SOC_FRAC)
@@ -238,6 +276,7 @@ class SimpleGreenGrid:
             "battery_discharged_kwh": round(battery_discharged_kwh, 6),
             "grid_import_kwh": round(grid_import_kwh, 6),
             "grid_export_kwh": round(grid_export_kwh, 6),
+            "curtailed_kwh": round(curtailed_kwh, 6), 
             "unmet_load_kwh": round(unmet_load_kwh, 6),
             "inverter_ok": self.inverter_ok(),
             "cloud": round(self.cloud_today, 4),
@@ -254,10 +293,11 @@ class SimpleGreenGrid:
                         f"Total charge cycles: {self.total_charge_cycles}, "
                         f"Total discharge cycles: {self.total_discharge_cycles}, "
                         f"Peak SoC: {self.peak_battery_soc:.4f} kWh, "
-                        f"Min SoC: {self.min_battery_soc:.4f} kWh")
+                        f"Min SoC: {self.min_battery_soc:.4f} kWh, "
+                        f"Total curtailed: {self.total_curtailed_kwh:.4f} kWh")
 
 # ---- RUN HELPER ----
-def run_simulation(days=None, strategy=None):
+def run_simulation(days=None):
     dt = TIMESTEP_MIN
     
     if SIM_TOTAL_DAY is not None:
@@ -267,13 +307,14 @@ def run_simulation(days=None, strategy=None):
         total_min = days * 24 * 60
         print(f"Simulando {days} día(s) = {total_min} minutos")
     
-    strat = strategy or MANAGEMENT_STRATEGY
+    strat = MANAGEMENT_STRATEGY or "load_priority"
     print(f"Estrategia: {strat}")
     print(f"Timestep: {dt} minutos")
     print(f"Total timesteps: {total_min // dt}")
     print(f"Capacidad batería: {BATTERY_CAP_KWH} kWh")
     print(f"Eficiencia round-trip: {ROUND_TRIP*100}%")
     print(f"Temporada: {getattr(config, 'SEASON', 'summer')}")
+    print(f"Modo de exportación: {'ZERO EXPORT' if ZERO_EXPORT_MODE else f'{GRID_EXPORT_LIMIT_KW} kW limit' if CAN_EXPORT else 'NO EXPORT'}")
     print("-" * 70)
 
     env = simpy.Environment()
@@ -305,12 +346,11 @@ def run_simulation(days=None, strategy=None):
     print(f"Ciclos de descarga: {plant.total_discharge_cycles}")
     print(f"SoC pico: {plant.peak_battery_soc:.4f} kWh ({plant.peak_battery_soc/BATTERY_CAP_KWH*100:.1f}%)")
     print(f"SoC mínimo: {plant.min_battery_soc:.4f} kWh ({plant.min_battery_soc/BATTERY_CAP_KWH*100:.1f}%)")
+    print(f"Energía solar curtailed: {plant.total_curtailed_kwh:.4f} kWh ({plant.total_curtailed_kwh/(total_min/60)*100:.2f}% loss)")
     print("-" * 70)
     
     print("Simulation finished. CSV: ", OUTPUT_CSV)
 
 
 if __name__ == "__main__":
-    run_simulation(days=1, strategy="load_priority")
-    # run_simulation(days=1, strategy="battery_first")
-    # run_simulation(days=1, strategy="export_priority")
+    run_simulation(days=1)
