@@ -1,7 +1,5 @@
 import random
 import math
-from Configs import config1 as config
-
 
 SEASON_WEIGHTS = {
     "spring": (0.1, 0.3, 0.4, 0.2),
@@ -11,10 +9,6 @@ SEASON_WEIGHTS = {
 }
 
 def sample_cloud_coverage(season: str) -> float:
-    """
-    Regresa un número 0-1.
-    Ej: 0.3 significa 30% menos generación.
-    """
     w = SEASON_WEIGHTS.get(season.lower(), SEASON_WEIGHTS["spring"])
 
     buckets = [
@@ -33,20 +27,14 @@ def sample_cloud_coverage(season: str) -> float:
 
     return random.uniform(0.0, 0.2)
 
-def solar_generation_kw(env_now_min: int, cloud_coverage: float, inverter_down: bool = False) -> float:
-    """
-    Curva senoidal (día despejado) + reduce por nubes + clipping por inversor.
-    Devuelve kW.
-    """
+def solar_generation_kw(env_now_min: int, cloud_coverage: float, config, inverter_down: bool = False) -> float:
     if inverter_down:
         return 0.0
 
-    t_hours = (env_now_min % (24*60)) / 60.0
+    t_hours = (env_now_min % (24 * 60)) / 60.0
     sun_angle = (t_hours - 6.0) * (math.pi / 12.0)
 
     ideal = config.SOLAR_PANEL_CAPACITY * max(0.0, math.sin(sun_angle))
-
-
     actual = ideal * (1.0 - cloud_coverage)
 
     return min(actual, float(config.MAX_INVERTER_OUTPUT))
