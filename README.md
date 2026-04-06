@@ -1,27 +1,40 @@
+## Installation & Running the Simulation
 
----
+### Prerequisites
+- **Python 3.10+** (3.11 recommended)
+- `pip` (comes with most Python installs)
 
-## ☀️ Solar Generation Model
+### 1) Clone the repository
+```bash
+git clone https://github.com/sarreolam/SG1_Team1.git
+cd SG1_Team1
+```
 
-The solar generation system simulates realistic solar energy production.
+Windows (CMD)
+```bash
+python -m venv .venv
+.\.venv\Scripts\activate.bat
+```
 
-### Features
-- Sinusoidal solar production curve (6 AM – 6 PM)
-- Seasonal cloud coverage simulation
-- Daily random cloud variation
-- Inverter clipping (max output limit)
+macOS / Linux
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
 
-### Files
-- `Simulation/solar_model.py`
-- Integrated into `Simulation/time.py`
+Install dependencies
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
 
----
+Run the simulation
+```bash
+cd simulation
+python green_grid_sim.py
+```
 
-## Technologies
-- Python
-- SimPy
-
----
-
-## Team
-SG1 – Team 1
+Outputs:
+- After the run finishes, CSV files are generated in:
+output/log.csv (timestep-by-timestep measurements)
+- output/events.csv (events such as inverter failures, battery full/low, curtailment)
