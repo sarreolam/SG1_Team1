@@ -4,6 +4,9 @@ import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
 import BarChart from './components/barChart'
+import DuckCurve from './components/duckCurve'
+import ProductionVsConsumption from './components/productionVsConsumption'
+import HouseholdComparison from './components/householdComparison'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -19,15 +22,12 @@ function App() {
         <div>
           <h1>Get started</h1>
           <p>
-            <BarChart/>
+            <DuckCurve/>
+            <ProductionVsConsumption/>
+            <HouseholdComparison/>
           </p>
         </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
+        
       </section>
 
       <div className="ticks"></div>
