@@ -50,3 +50,4 @@ def solar_generation_kw(env_now_min: int, cloud_coverage: float, inverter_down: 
     actual = ideal * (1.0 - cloud_coverage)
 
     return min(actual, float(config.MAX_INVERTER_OUTPUT))
+
