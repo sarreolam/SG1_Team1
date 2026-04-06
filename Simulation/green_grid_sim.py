@@ -3,7 +3,11 @@ import csv
 import random
 import simpy
 import math
-from solar_model import sample_cloud_coverage, solar_generation_kw
+
+
+from Simulation.solar_model import sample_cloud_coverage, solar_generation_kw
+
+
 
 def run_simulation(config, output_dir="Simulation/output"):
  
