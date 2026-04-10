@@ -7,6 +7,12 @@ import BarChart from './components/barChart'
 import DuckCurve from './components/duckCurve'
 import ProductionVsConsumption from './components/productionVsConsumption'
 import HouseholdComparison from './components/householdComparison'
+import WealthLevelChart from './components/wealthLevelChart'
+import PeakTimes from './components/peakTimes'
+import SurplusDeficitChart from './components/surplusDeficitChart'
+import CostSavingsChart from './components/CostSavingsChart'
+import GridExportChart from './components/gridExportChart'
+import BatteryUtilizationChart from './components/BatteryUtilizationChart'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -25,6 +31,12 @@ function App() {
             <DuckCurve/>
             <ProductionVsConsumption/>
             <HouseholdComparison/>
+            <WealthLevelChart/>
+            <PeakTimes/>
+            <SurplusDeficitChart/>
+            <CostSavingsChart/>
+            <GridExportChart/>
+            <BatteryUtilizationChart/>
           </p>
         </div>
         
