@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
-import data from "../../../energy_simulations.json";
+import sim_data from "../../../Simulation/Dashboard/data/all_energy_simulations.json";
 
 const BatteryUtilizationChart = () => {
   const ref = useRef();
@@ -26,9 +26,9 @@ const BatteryUtilizationChart = () => {
     const maxRadius = 120;
     const minRadius = 30;
 
-    const simCount = data.simulations.length;
+    const simCount = sim_data.simulations.length;
 
-    data.simulations.forEach((sim, simIdx) => {
+    sim_data.simulations.forEach((sim, simIdx) => {
       const hourlySOC = hours.map((h) => {
         const points = sim.timeseries.filter((d) => d.hour === h);
         return {
@@ -83,7 +83,7 @@ const BatteryUtilizationChart = () => {
     const legend = svg.append("g")
       .attr("transform", `translate(${width / 2 - 150}, ${height - 22})`);
 
-    data.simulations.forEach((sim, i) => {
+    sim_data.simulations.forEach((sim, i) => {
       legend.append("rect")
         .attr("x", i * 140).attr("y", 0)
         .attr("width", 10).attr("height", 10)

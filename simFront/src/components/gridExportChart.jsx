@@ -1,12 +1,12 @@
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
-import data from "../../../energy_simulations.json";
+import sim_data from "../../../Simulation/Dashboard/data/all_energy_simulations.json";
 
 const GridExportChart = () => {
   const ref = useRef();
 
   useEffect(() => {
-    const chartData = data.simulations.map((sim) => ({
+    const chartData = sim_data.simulations.map((sim) => ({
       label: sim.id,
       exported:   sim.summary.total_grid_export_kwh,
       selfUsed:   sim.summary.total_load_kwh - sim.summary.total_grid_import_kwh,

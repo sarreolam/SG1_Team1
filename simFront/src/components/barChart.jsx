@@ -1,12 +1,12 @@
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
-import dummyData from "../../../dummy_energy_simulations.json";
+import sim_data from "../../../Simulation/Dashboard/data/all_energy_simulations.json";
 
 const BarChart = () => {
     const ref = useRef();
 
     useEffect(()=> {
-        const data = dummyData.simulations.map((sim)=>({label: sim.id, value: d3.sum(sim.timeseries, (d)=> d.load_kw)}));
+        const data = sim_data.simulations.map((sim)=>({label: sim.id, value: d3.sum(sim.timeseries, (d)=> d.load_kw)}));
         
         const margin = {top: 20, bottom: 80, left: 55, right: 20}
         const width = 500 - margin.left - margin.right;

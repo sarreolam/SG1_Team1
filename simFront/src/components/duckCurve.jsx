@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
-import dummyData from "../../../energy_simulations.json";
+import data from "../../../Simulation/Dashboard/data/all_energy_simulations.json";
 
 
 const DuckCurve = () => {
@@ -11,7 +11,7 @@ const DuckCurve = () => {
 
         const hourTotals = hours.map((h)=> {
             let totalSolar = 0, totalLoad = 0, count = 0;
-            dummyData.simulations.forEach((sim) => {
+            data.simulations.forEach((sim) => {
                 sim.timeseries.filter((d)=> d.hour === h).forEach((d)=> {
                     totalSolar += d.solar_kw;
                     totalLoad += d.load_kw;

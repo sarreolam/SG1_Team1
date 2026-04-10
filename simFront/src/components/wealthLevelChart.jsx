@@ -1,12 +1,12 @@
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
-import data from "../../../energy_simulations.json";
+import sim_data from "../../../Simulation/Dashboard/data/all_energy_simulations.json";
 
 const WealthLevelChart = () => {
     const ref = useRef();
 
     useEffect(()=> {
-        const byWealth = d3.rollups(data.simulations, (sims) => ({
+        const byWealth = d3.rollups(sim_data.simulations, (sims) => ({
             production: d3.sum(sims, (s)=> s.summary.total_gen_kwh),
             consumption: d3.sum(sims, (s)=> s.summary.total_load_kwh),
         }), (s)=> s.metadata.wealth_level).map(([wealth, vals]) => ({wealth, ...vals}));

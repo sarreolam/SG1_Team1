@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
-import data from "../../../energy_simulations.json";
+import sim_data from "../../../Simulation/Dashboard/data/all_energy_simulations.json";
 
 const CostSavingsChart = () => {
     const ref = useRef();
@@ -8,7 +8,7 @@ const CostSavingsChart = () => {
     useEffect(()=>{
         const IMPORT_RATE = 0.28; //Costo de grid
 
-        const chartData = data.simulations.map((sim)=>{
+        const chartData = sim_data.simulations.map((sim)=>{
             const {total_load_kwh, total_grid_import_kwh, total_import_cost, total_export_revenue} = sim.summary;
             const selfConsumed = total_load_kwh - total_grid_import_kwh;
             const grossCostWithout = total_load_kwh * IMPORT_RATE;

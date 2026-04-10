@@ -1,12 +1,12 @@
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
-import data from "../../../energy_simulations.json";
+import sim_data from "../../../Simulation/Dashboard/data/all_energy_simulations.json";
 
 const SurplusDeficitChart = () => {
     const ref = useRef();
     
     useEffect(()=>{
-        const chartData = data.simulations.map((sim)=>{
+        const chartData = sim_data.simulations.map((sim)=>{
             const surplus = d3.sum(sim.timeseries.filter((d)=> d.net_kwh > 0 ), (d)=> d.net_kwh);
             const deficit = d3.sum(sim.timeseries.filter((d)=> d.net_kwh < 0 ), (d)=> -d.net_kwh);
             return {

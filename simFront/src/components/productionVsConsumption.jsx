@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
-import data from "../../../dummy_energy_simulations.json";
+import sim_data from "../../../Simulation/Dashboard/data/all_energy_simulations.json";
 
 const ProductionVsConsumption = () => {
   const ref = useRef();
@@ -9,14 +9,14 @@ const ProductionVsConsumption = () => {
     const totals = [
       {
         label: "Production",
-        value: d3.sum(data.simulations, (sim) =>
+        value: d3.sum(sim_data.simulations, (sim) =>
           d3.sum(sim.timeseries, (d) => d.solar_kw)
         ),
         color: "#f0c040",
       },
       {
         label: "Consumption",
-        value: d3.sum(data.simulations, (sim) =>
+        value: d3.sum(sim_data.simulations, (sim) =>
           d3.sum(sim.timeseries, (d) => d.load_kw)
         ),
         color: "#e07b39",

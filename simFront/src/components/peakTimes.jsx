@@ -1,12 +1,12 @@
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
-import data from "../../../energy_simulations.json";
+import sim_data from "../../../Simulation/Dashboard/data/all_energy_simulations.json";
 
 const PeakTimes = () => {
     const ref = useRef();
 
     useEffect(()=> {
-        const peakData = data.simulations.map((sim)=>{
+        const peakData = sim_data.simulations.map((sim)=>{
             const peakSolar = d3.greatest(sim.timeseries, (d)=> d.solar_kw);
             const peakLoad = d3.greatest(sim.timeseries, (d)=> d.load_kw);
             return {
