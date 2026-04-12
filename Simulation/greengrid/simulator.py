@@ -5,13 +5,15 @@ from collections import defaultdict
 from dataclasses import asdict
 from statistics import mean
 from typing import Dict, List
+from pathlib import Path
 
 import simpy
 
 from .components import GridConnection
 from .config import ScenarioConfig
 from .household import HouseholdSimulator
-from .io_utils import create_run_directory, write_csv
+from .io_utils import create_run_directories, write_csv
+from DataPrep.prepare_data import build_dashboard_data
 
 
 class NeighborhoodSimulation:
@@ -86,27 +88,35 @@ class NeighborhoodSimulation:
         return self._persist_results()
 
     def _persist_results(self) -> dict:
-        run_dir = create_run_directory(self.scenario.name)
+        run_dir, latest_dir = create_run_directories(self.scenario.name)
 
         household_rows = [row.to_dict() for house in self.households for row in house.log]
         event_rows = [event.to_dict() for house in self.households for event in house.events]
+        summary_rows = self.summary_rows()
 
-        household_path = run_dir / "household_timeseries.csv"
-        neighborhood_path = run_dir / "neighborhood_timeseries.csv"
-        events_path = run_dir / "events.csv"
-        summary_path = run_dir / "summary.csv"
+        files = {
+            "household_timeseries.csv": household_rows,
+            "neighborhood_timeseries.csv": self.neighborhood_log,
+            "events.csv": event_rows,
+            "summary.csv": summary_rows,
+        }
 
-        write_csv(household_path, household_rows)
-        write_csv(neighborhood_path, self.neighborhood_log)
-        write_csv(events_path, event_rows)
-        write_csv(summary_path, self.summary_rows())
+        for filename, rows in files.items():
+            write_csv(run_dir / filename, rows)
+            write_csv(latest_dir / filename, rows)
+
+        dashboard_dir = Path("../Dashboard/data")
+        build_dashboard_data(
+            source_dir=latest_dir,
+            output_dir=dashboard_dir,
+        )
 
         return {
             "run_dir": str(run_dir),
-            "household_csv": str(household_path),
-            "neighborhood_csv": str(neighborhood_path),
-            "events_csv": str(events_path),
-            "summary_csv": str(summary_path),
+            "household_csv": str(run_dir / "household_timeseries.csv"),
+            "neighborhood_csv": str(run_dir / "neighborhood_timeseries.csv"),
+            "events_csv": str(run_dir / "events.csv"),
+            "summary_csv": str(run_dir / "summary.csv"),
             "summary": self.summary_rows(),
         }
 
