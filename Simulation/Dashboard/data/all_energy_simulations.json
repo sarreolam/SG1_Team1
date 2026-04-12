@@ -1,0 +1,1531 @@
+{
+  "simulations": [
+    {
+      "id": "large_family_high",
+      "metadata": {
+        "household_type": "large_family",
+        "wealth_level": "high"
+      },
+      "summary": {
+        "total_gen_kwh": 1098.5058,
+        "total_load_kwh": 928.7701,
+        "total_grid_import_kwh": 146.2143,
+        "total_grid_export_kwh": 20.0,
+        "total_import_cost": 1.0966,
+        "total_export_revenue": 0.18,
+        "self_sufficiency_pct": 116.1,
+        "total_curtailed_kwh": 248.1986,
+        "total_surplus_kwh": 736.2822,
+        "total_deficit_kwh": 566.5465
+      },
+      "timeseries": [
+        {
+          "hour": 0,
+          "solar_kw": 0.0,
+          "load_kw": 1.1297,
+          "net_kwh": -1.129735,
+          "battery_soc_pct": 27.63,
+          "grid_import_kwh": 0.454493,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 1,
+          "solar_kw": 0.0,
+          "load_kw": 0.9998,
+          "net_kwh": -0.999775,
+          "battery_soc_pct": 24.14,
+          "grid_import_kwh": 0.338709,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 2,
+          "solar_kw": 0.0,
+          "load_kw": 1.1644,
+          "net_kwh": -1.164437,
+          "battery_soc_pct": 19.87,
+          "grid_import_kwh": 0.353359,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 3,
+          "solar_kw": 0.0,
+          "load_kw": 1.2182,
+          "net_kwh": -1.218201,
+          "battery_soc_pct": 15.66,
+          "grid_import_kwh": 0.419917,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 4,
+          "solar_kw": 0.0,
+          "load_kw": 0.9919,
+          "net_kwh": -0.991916,
+          "battery_soc_pct": 12.9,
+          "grid_import_kwh": 0.469168,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 5,
+          "solar_kw": 0.0,
+          "load_kw": 1.0125,
+          "net_kwh": -1.012478,
+          "battery_soc_pct": 10.65,
+          "grid_import_kwh": 0.583828,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 6,
+          "solar_kw": 0.0,
+          "load_kw": 1.2471,
+          "net_kwh": -1.247136,
+          "battery_soc_pct": 8.38,
+          "grid_import_kwh": 0.817018,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 7,
+          "solar_kw": 1.2895,
+          "load_kw": 1.661,
+          "net_kwh": -0.371512,
+          "battery_soc_pct": 8.11,
+          "grid_import_kwh": 0.329048,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 8,
+          "solar_kw": 2.4912,
+          "load_kw": 1.6995,
+          "net_kwh": 0.791721,
+          "battery_soc_pct": 12.25,
+          "grid_import_kwh": 0.082125,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 9,
+          "solar_kw": 3.5231,
+          "load_kw": 1.1824,
+          "net_kwh": 2.340661,
+          "battery_soc_pct": 23.77,
+          "grid_import_kwh": 0.088572,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 10,
+          "solar_kw": 4.2324,
+          "load_kw": 1.1991,
+          "net_kwh": 3.033293,
+          "battery_soc_pct": 38.36,
+          "grid_import_kwh": 0.048158,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 11,
+          "solar_kw": 4.4903,
+          "load_kw": 1.1188,
+          "net_kwh": 3.371473,
+          "battery_soc_pct": 54.35,
+          "grid_import_kwh": 0.0,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 12,
+          "solar_kw": 4.564,
+          "load_kw": 1.0779,
+          "net_kwh": 3.486086,
+          "battery_soc_pct": 67.94,
+          "grid_import_kwh": 0.0,
+          "grid_export_kwh": 0.016965
+        },
+        {
+          "hour": 13,
+          "solar_kw": 4.4903,
+          "load_kw": 0.9992,
+          "net_kwh": 3.491007,
+          "battery_soc_pct": 74.5,
+          "grid_import_kwh": 0.0,
+          "grid_export_kwh": 0.159349
+        },
+        {
+          "hour": 14,
+          "solar_kw": 4.2324,
+          "load_kw": 0.9986,
+          "net_kwh": 3.233734,
+          "battery_soc_pct": 78.1,
+          "grid_import_kwh": 0.0,
+          "grid_export_kwh": 0.262904
+        },
+        {
+          "hour": 15,
+          "solar_kw": 3.5231,
+          "load_kw": 0.9758,
+          "net_kwh": 2.547253,
+          "battery_soc_pct": 80.39,
+          "grid_import_kwh": 0.0,
+          "grid_export_kwh": 0.159486
+        },
+        {
+          "hour": 16,
+          "solar_kw": 2.4912,
+          "load_kw": 1.0092,
+          "net_kwh": 1.482023,
+          "battery_soc_pct": 81.34,
+          "grid_import_kwh": 0.0,
+          "grid_export_kwh": 0.059156
+        },
+        {
+          "hour": 17,
+          "solar_kw": 1.2895,
+          "load_kw": 1.161,
+          "net_kwh": 0.128556,
+          "battery_soc_pct": 79.96,
+          "grid_import_kwh": 0.0,
+          "grid_export_kwh": 0.008806
+        },
+        {
+          "hour": 18,
+          "solar_kw": 0.0,
+          "load_kw": 2.1871,
+          "net_kwh": -2.187126,
+          "battery_soc_pct": 68.43,
+          "grid_import_kwh": 0.0,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 19,
+          "solar_kw": 0.0,
+          "load_kw": 1.8083,
+          "net_kwh": -1.808249,
+          "battery_soc_pct": 58.9,
+          "grid_import_kwh": 0.0,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 20,
+          "solar_kw": 0.0,
+          "load_kw": 2.355,
+          "net_kwh": -2.354949,
+          "battery_soc_pct": 47.58,
+          "grid_import_kwh": 0.205585,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 21,
+          "solar_kw": 0.0,
+          "load_kw": 1.1627,
+          "net_kwh": -1.162742,
+          "battery_soc_pct": 41.81,
+          "grid_import_kwh": 0.06926,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 22,
+          "solar_kw": 0.0,
+          "load_kw": 1.32,
+          "net_kwh": -1.320051,
+          "battery_soc_pct": 36.87,
+          "grid_import_kwh": 0.383028,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 23,
+          "solar_kw": 0.0,
+          "load_kw": 1.2796,
+          "net_kwh": -1.279643,
+          "battery_soc_pct": 31.35,
+          "grid_import_kwh": 0.231542,
+          "grid_export_kwh": 0.0
+        }
+      ],
+      "by_day": [
+        {
+          "day": 0,
+          "solar_kwh": 18.3444,
+          "load_kwh": 27.7219,
+          "import_kwh": 1.6528,
+          "export_kwh": 0.0,
+          "net_kwh": -9.3775,
+          "import_cost": 0.0124
+        },
+        {
+          "day": 1,
+          "solar_kwh": 17.1498,
+          "load_kwh": 34.4128,
+          "import_kwh": 17.9657,
+          "export_kwh": 0.0,
+          "net_kwh": -17.2631,
+          "import_cost": 0.1347
+        },
+        {
+          "day": 2,
+          "solar_kwh": 26.3811,
+          "load_kwh": 28.4003,
+          "import_kwh": 8.0392,
+          "export_kwh": 0.0,
+          "net_kwh": -2.0192,
+          "import_cost": 0.0603
+        },
+        {
+          "day": 3,
+          "solar_kwh": 40.9638,
+          "load_kwh": 28.8178,
+          "import_kwh": 2.9956,
+          "export_kwh": 8.4661,
+          "net_kwh": 12.1461,
+          "import_cost": 0.0225
+        },
+        {
+          "day": 4,
+          "solar_kwh": 44.912,
+          "load_kwh": 33.889,
+          "import_kwh": 0.0,
+          "export_kwh": 11.5339,
+          "net_kwh": 11.0229,
+          "import_cost": 0.0
+        },
+        {
+          "day": 5,
+          "solar_kwh": 41.8025,
+          "load_kwh": 27.928,
+          "import_kwh": 3.9103,
+          "export_kwh": 0.0,
+          "net_kwh": 13.8745,
+          "import_cost": 0.0293
+        },
+        {
+          "day": 6,
+          "solar_kwh": 49.4338,
+          "load_kwh": 32.5937,
+          "import_kwh": 2.2145,
+          "export_kwh": 0.0,
+          "net_kwh": 16.8401,
+          "import_cost": 0.0166
+        },
+        {
+          "day": 7,
+          "solar_kwh": 19.801,
+          "load_kwh": 35.1413,
+          "import_kwh": 6.5453,
+          "export_kwh": 0.0,
+          "net_kwh": -15.3402,
+          "import_cost": 0.0491
+        },
+        {
+          "day": 8,
+          "solar_kwh": 32.3302,
+          "load_kwh": 32.3362,
+          "import_kwh": 7.516,
+          "export_kwh": 0.0,
+          "net_kwh": -0.006,
+          "import_cost": 0.0564
+        },
+        {
+          "day": 9,
+          "solar_kwh": 47.9539,
+          "load_kwh": 37.7222,
+          "import_kwh": 1.9311,
+          "export_kwh": 0.0,
+          "net_kwh": 10.2317,
+          "import_cost": 0.0145
+        },
+        {
+          "day": 10,
+          "solar_kwh": 50.9146,
+          "load_kwh": 28.0807,
+          "import_kwh": 6.6022,
+          "export_kwh": 0.0,
+          "net_kwh": 22.8339,
+          "import_cost": 0.0495
+        },
+        {
+          "day": 11,
+          "solar_kwh": 51.1964,
+          "load_kwh": 27.6293,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": 23.5672,
+          "import_cost": 0.0
+        },
+        {
+          "day": 12,
+          "solar_kwh": 51.1639,
+          "load_kwh": 31.5701,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": 19.5938,
+          "import_cost": 0.0
+        },
+        {
+          "day": 13,
+          "solar_kwh": 18.1997,
+          "load_kwh": 26.8512,
+          "import_kwh": 3.9299,
+          "export_kwh": 0.0,
+          "net_kwh": -8.6515,
+          "import_cost": 0.0295
+        },
+        {
+          "day": 14,
+          "solar_kwh": 48.4804,
+          "load_kwh": 35.2639,
+          "import_kwh": 7.2874,
+          "export_kwh": 0.0,
+          "net_kwh": 13.2165,
+          "import_cost": 0.0547
+        },
+        {
+          "day": 15,
+          "solar_kwh": 50.4762,
+          "load_kwh": 31.9418,
+          "import_kwh": 4.47,
+          "export_kwh": 0.0,
+          "net_kwh": 18.5344,
+          "import_cost": 0.0335
+        },
+        {
+          "day": 16,
+          "solar_kwh": 53.1997,
+          "load_kwh": 32.1659,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": 21.0338,
+          "import_cost": 0.0
+        },
+        {
+          "day": 17,
+          "solar_kwh": 16.8775,
+          "load_kwh": 33.0441,
+          "import_kwh": 10.1206,
+          "export_kwh": 0.0,
+          "net_kwh": -16.1666,
+          "import_cost": 0.0759
+        },
+        {
+          "day": 18,
+          "solar_kwh": 28.2587,
+          "load_kwh": 32.3424,
+          "import_kwh": 10.2531,
+          "export_kwh": 0.0,
+          "net_kwh": -4.0836,
+          "import_cost": 0.0769
+        },
+        {
+          "day": 19,
+          "solar_kwh": 20.2231,
+          "load_kwh": 28.2492,
+          "import_kwh": 4.2647,
+          "export_kwh": 0.0,
+          "net_kwh": -8.0261,
+          "import_cost": 0.032
+        },
+        {
+          "day": 20,
+          "solar_kwh": 21.2533,
+          "load_kwh": 31.5462,
+          "import_kwh": 11.8152,
+          "export_kwh": 0.0,
+          "net_kwh": -10.2929,
+          "import_cost": 0.0886
+        },
+        {
+          "day": 21,
+          "solar_kwh": 28.5602,
+          "load_kwh": 32.9536,
+          "import_kwh": 9.0841,
+          "export_kwh": 0.0,
+          "net_kwh": -4.3934,
+          "import_cost": 0.0681
+        },
+        {
+          "day": 22,
+          "solar_kwh": 41.995,
+          "load_kwh": 28.1289,
+          "import_kwh": 3.4774,
+          "export_kwh": 0.0,
+          "net_kwh": 13.8661,
+          "import_cost": 0.0261
+        },
+        {
+          "day": 23,
+          "solar_kwh": 49.347,
+          "load_kwh": 27.9728,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": 21.3742,
+          "import_cost": 0.0
+        },
+        {
+          "day": 24,
+          "solar_kwh": 24.5115,
+          "load_kwh": 37.2136,
+          "import_kwh": 4.3348,
+          "export_kwh": 0.0,
+          "net_kwh": -12.7021,
+          "import_cost": 0.0325
+        },
+        {
+          "day": 25,
+          "solar_kwh": 19.3072,
+          "load_kwh": 27.3407,
+          "import_kwh": 8.9282,
+          "export_kwh": 0.0,
+          "net_kwh": -8.0336,
+          "import_cost": 0.067
+        },
+        {
+          "day": 26,
+          "solar_kwh": 50.8896,
+          "load_kwh": 28.2014,
+          "import_kwh": 7.3551,
+          "export_kwh": 0.0,
+          "net_kwh": 22.6882,
+          "import_cost": 0.0552
+        },
+        {
+          "day": 27,
+          "solar_kwh": 52.7241,
+          "load_kwh": 32.2522,
+          "import_kwh": 1.521,
+          "export_kwh": 0.0,
+          "net_kwh": 20.4719,
+          "import_cost": 0.0114
+        },
+        {
+          "day": 28,
+          "solar_kwh": 32.2423,
+          "load_kwh": 27.5302,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": 4.7121,
+          "import_cost": 0.0
+        },
+        {
+          "day": 29,
+          "solar_kwh": 49.6129,
+          "load_kwh": 29.5286,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": 20.0843,
+          "import_cost": 0.0
+        }
+      ]
+    },
+    {
+      "id": "small_family_middle",
+      "metadata": {
+        "household_type": "small_family",
+        "wealth_level": "middle"
+      },
+      "summary": {
+        "total_gen_kwh": 580.7605,
+        "total_load_kwh": 500.1739,
+        "total_grid_import_kwh": 83.2413,
+        "total_grid_export_kwh": 20.0,
+        "total_import_cost": 0.6243,
+        "total_export_revenue": 0.18,
+        "self_sufficiency_pct": 112.1,
+        "total_curtailed_kwh": 114.294,
+        "total_surplus_kwh": 412.0599,
+        "total_deficit_kwh": 331.4734
+      },
+      "timeseries": [
+        {
+          "hour": 0,
+          "solar_kw": 0.0,
+          "load_kw": 0.5354,
+          "net_kwh": -0.53543,
+          "battery_soc_pct": 36.14,
+          "grid_import_kwh": 0.114572,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 1,
+          "solar_kw": 0.0,
+          "load_kw": 0.6187,
+          "net_kwh": -0.618705,
+          "battery_soc_pct": 32.28,
+          "grid_import_kwh": 0.124939,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 2,
+          "solar_kw": 0.0,
+          "load_kw": 0.5908,
+          "net_kwh": -0.590754,
+          "battery_soc_pct": 28.6,
+          "grid_import_kwh": 0.119103,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 3,
+          "solar_kw": 0.0,
+          "load_kw": 0.4981,
+          "net_kwh": -0.498114,
+          "battery_soc_pct": 25.81,
+          "grid_import_kwh": 0.14093,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 4,
+          "solar_kw": 0.0,
+          "load_kw": 0.4648,
+          "net_kwh": -0.464795,
+          "battery_soc_pct": 23.2,
+          "grid_import_kwh": 0.12958,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 5,
+          "solar_kw": 0.0,
+          "load_kw": 0.5932,
+          "net_kwh": -0.593145,
+          "battery_soc_pct": 19.79,
+          "grid_import_kwh": 0.157466,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 6,
+          "solar_kw": 0.0,
+          "load_kw": 0.5741,
+          "net_kwh": -0.574079,
+          "battery_soc_pct": 17.2,
+          "grid_import_kwh": 0.242416,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 7,
+          "solar_kw": 0.6577,
+          "load_kw": 1.2741,
+          "net_kwh": -0.616384,
+          "battery_soc_pct": 14.67,
+          "grid_import_kwh": 0.294857,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 8,
+          "solar_kw": 1.2705,
+          "load_kw": 1.2504,
+          "net_kwh": 0.020129,
+          "battery_soc_pct": 16.21,
+          "grid_import_kwh": 0.213473,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 9,
+          "solar_kw": 1.7968,
+          "load_kw": 0.5584,
+          "net_kwh": 1.23837,
+          "battery_soc_pct": 25.33,
+          "grid_import_kwh": 0.061409,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 10,
+          "solar_kw": 2.1994,
+          "load_kw": 0.6876,
+          "net_kwh": 1.51183,
+          "battery_soc_pct": 36.24,
+          "grid_import_kwh": 0.046586,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 11,
+          "solar_kw": 2.4103,
+          "load_kw": 0.4573,
+          "net_kwh": 1.952983,
+          "battery_soc_pct": 49.99,
+          "grid_import_kwh": 0.053647,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 12,
+          "solar_kw": 2.4671,
+          "load_kw": 0.5909,
+          "net_kwh": 1.876192,
+          "battery_soc_pct": 61.23,
+          "grid_import_kwh": 0.056566,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 13,
+          "solar_kw": 2.4103,
+          "load_kw": 0.4425,
+          "net_kwh": 1.967765,
+          "battery_soc_pct": 69.12,
+          "grid_import_kwh": 0.063371,
+          "grid_export_kwh": 0.080639
+        },
+        {
+          "hour": 14,
+          "solar_kw": 2.1994,
+          "load_kw": 0.554,
+          "net_kwh": 1.645398,
+          "battery_soc_pct": 72.7,
+          "grid_import_kwh": 0.058516,
+          "grid_export_kwh": 0.22885
+        },
+        {
+          "hour": 15,
+          "solar_kw": 1.904,
+          "load_kw": 0.515,
+          "net_kwh": 1.389043,
+          "battery_soc_pct": 75.0,
+          "grid_import_kwh": 0.041545,
+          "grid_export_kwh": 0.21841
+        },
+        {
+          "hour": 16,
+          "solar_kw": 1.3464,
+          "load_kw": 0.6161,
+          "net_kwh": 0.730265,
+          "battery_soc_pct": 75.84,
+          "grid_import_kwh": 0.040507,
+          "grid_export_kwh": 0.098513
+        },
+        {
+          "hour": 17,
+          "solar_kw": 0.6969,
+          "load_kw": 0.4299,
+          "net_kwh": 0.267025,
+          "battery_soc_pct": 76.18,
+          "grid_import_kwh": 0.042337,
+          "grid_export_kwh": 0.040255
+        },
+        {
+          "hour": 18,
+          "solar_kw": 0.0,
+          "load_kw": 1.2249,
+          "net_kwh": -1.22492,
+          "battery_soc_pct": 67.58,
+          "grid_import_kwh": 0.124285,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 19,
+          "solar_kw": 0.0,
+          "load_kw": 1.3502,
+          "net_kwh": -1.350169,
+          "battery_soc_pct": 58.69,
+          "grid_import_kwh": 0.211372,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 20,
+          "solar_kw": 0.0,
+          "load_kw": 1.2335,
+          "net_kwh": -1.233516,
+          "battery_soc_pct": 50.32,
+          "grid_import_kwh": 0.161024,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 21,
+          "solar_kw": 0.0,
+          "load_kw": 0.597,
+          "net_kwh": -0.597002,
+          "battery_soc_pct": 46.52,
+          "grid_import_kwh": 0.110053,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 22,
+          "solar_kw": 0.0,
+          "load_kw": 0.4613,
+          "net_kwh": -0.461324,
+          "battery_soc_pct": 43.48,
+          "grid_import_kwh": 0.072444,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 23,
+          "solar_kw": 0.0,
+          "load_kw": 0.5544,
+          "net_kwh": -0.554448,
+          "battery_soc_pct": 39.88,
+          "grid_import_kwh": 0.093712,
+          "grid_export_kwh": 0.0
+        }
+      ],
+      "by_day": [
+        {
+          "day": 0,
+          "solar_kwh": 23.3782,
+          "load_kwh": 17.2384,
+          "import_kwh": 0.5799,
+          "export_kwh": 4.1884,
+          "net_kwh": 6.1398,
+          "import_cost": 0.0043
+        },
+        {
+          "day": 1,
+          "solar_kwh": 0.0,
+          "load_kwh": 16.9746,
+          "import_kwh": 10.0319,
+          "export_kwh": 0.0,
+          "net_kwh": -16.9746,
+          "import_cost": 0.0752
+        },
+        {
+          "day": 2,
+          "solar_kwh": 6.6678,
+          "load_kwh": 14.5123,
+          "import_kwh": 8.3784,
+          "export_kwh": 0.0,
+          "net_kwh": -7.8446,
+          "import_cost": 0.0628
+        },
+        {
+          "day": 3,
+          "solar_kwh": 31.9017,
+          "load_kwh": 16.7837,
+          "import_kwh": 3.5245,
+          "export_kwh": 10.1973,
+          "net_kwh": 15.118,
+          "import_cost": 0.0264
+        },
+        {
+          "day": 4,
+          "solar_kwh": 14.1671,
+          "load_kwh": 18.0794,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": -3.9123,
+          "import_cost": 0.0
+        },
+        {
+          "day": 5,
+          "solar_kwh": 18.5289,
+          "load_kwh": 19.0435,
+          "import_kwh": 5.6463,
+          "export_kwh": 0.0,
+          "net_kwh": -0.5146,
+          "import_cost": 0.0423
+        },
+        {
+          "day": 6,
+          "solar_kwh": 28.2985,
+          "load_kwh": 19.7577,
+          "import_kwh": 1.8756,
+          "export_kwh": 5.6143,
+          "net_kwh": 8.5408,
+          "import_cost": 0.0141
+        },
+        {
+          "day": 7,
+          "solar_kwh": 27.7863,
+          "load_kwh": 21.2131,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": 6.5732,
+          "import_cost": 0.0
+        },
+        {
+          "day": 8,
+          "solar_kwh": 6.9342,
+          "load_kwh": 14.3062,
+          "import_kwh": 2.4681,
+          "export_kwh": 0.0,
+          "net_kwh": -7.3721,
+          "import_cost": 0.0185
+        },
+        {
+          "day": 9,
+          "solar_kwh": 29.1899,
+          "load_kwh": 14.8049,
+          "import_kwh": 3.346,
+          "export_kwh": 0.0,
+          "net_kwh": 14.3849,
+          "import_cost": 0.0251
+        },
+        {
+          "day": 10,
+          "solar_kwh": 23.245,
+          "load_kwh": 15.9142,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": 7.3308,
+          "import_cost": 0.0
+        },
+        {
+          "day": 11,
+          "solar_kwh": 13.9661,
+          "load_kwh": 18.862,
+          "import_kwh": 0.123,
+          "export_kwh": 0.0,
+          "net_kwh": -4.8959,
+          "import_cost": 0.0009
+        },
+        {
+          "day": 12,
+          "solar_kwh": 33.2138,
+          "load_kwh": 14.107,
+          "import_kwh": 1.4419,
+          "export_kwh": 0.0,
+          "net_kwh": 19.1068,
+          "import_cost": 0.0108
+        },
+        {
+          "day": 13,
+          "solar_kwh": 32.3982,
+          "load_kwh": 16.1253,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": 16.2729,
+          "import_cost": 0.0
+        },
+        {
+          "day": 14,
+          "solar_kwh": 18.5769,
+          "load_kwh": 15.8586,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": 2.7183,
+          "import_cost": 0.0
+        },
+        {
+          "day": 15,
+          "solar_kwh": 7.0142,
+          "load_kwh": 14.1384,
+          "import_kwh": 0.4033,
+          "export_kwh": 0.0,
+          "net_kwh": -7.1242,
+          "import_cost": 0.003
+        },
+        {
+          "day": 16,
+          "solar_kwh": 18.5061,
+          "load_kwh": 16.0461,
+          "import_kwh": 4.1343,
+          "export_kwh": 0.0,
+          "net_kwh": 2.46,
+          "import_cost": 0.031
+        },
+        {
+          "day": 17,
+          "solar_kwh": 31.7141,
+          "load_kwh": 14.2069,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": 17.5072,
+          "import_cost": 0.0
+        },
+        {
+          "day": 18,
+          "solar_kwh": 10.1603,
+          "load_kwh": 18.0103,
+          "import_kwh": 1.5941,
+          "export_kwh": 0.0,
+          "net_kwh": -7.85,
+          "import_cost": 0.012
+        },
+        {
+          "day": 19,
+          "solar_kwh": 31.3212,
+          "load_kwh": 16.2821,
+          "import_kwh": 5.0984,
+          "export_kwh": 0.0,
+          "net_kwh": 15.0392,
+          "import_cost": 0.0382
+        },
+        {
+          "day": 20,
+          "solar_kwh": 13.2939,
+          "load_kwh": 16.3651,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": -3.0712,
+          "import_cost": 0.0
+        },
+        {
+          "day": 21,
+          "solar_kwh": 28.4423,
+          "load_kwh": 17.4776,
+          "import_kwh": 1.2963,
+          "export_kwh": 0.0,
+          "net_kwh": 10.9647,
+          "import_cost": 0.0097
+        },
+        {
+          "day": 22,
+          "solar_kwh": 0.0,
+          "load_kwh": 16.8586,
+          "import_kwh": 10.2029,
+          "export_kwh": 0.0,
+          "net_kwh": -16.8586,
+          "import_cost": 0.0765
+        },
+        {
+          "day": 23,
+          "solar_kwh": 0.0,
+          "load_kwh": 14.302,
+          "import_kwh": 14.302,
+          "export_kwh": 0.0,
+          "net_kwh": -14.302,
+          "import_cost": 0.1073
+        },
+        {
+          "day": 24,
+          "solar_kwh": 33.6683,
+          "load_kwh": 14.7849,
+          "import_kwh": 3.1459,
+          "export_kwh": 0.0,
+          "net_kwh": 18.8834,
+          "import_cost": 0.0236
+        },
+        {
+          "day": 25,
+          "solar_kwh": 19.9699,
+          "load_kwh": 16.8371,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": 3.1328,
+          "import_cost": 0.0
+        },
+        {
+          "day": 26,
+          "solar_kwh": 11.0569,
+          "load_kwh": 18.0717,
+          "import_kwh": 2.1425,
+          "export_kwh": 0.0,
+          "net_kwh": -7.0148,
+          "import_cost": 0.0161
+        },
+        {
+          "day": 27,
+          "solar_kwh": 21.4512,
+          "load_kwh": 16.636,
+          "import_kwh": 3.3658,
+          "export_kwh": 0.0,
+          "net_kwh": 4.8152,
+          "import_cost": 0.0252
+        },
+        {
+          "day": 28,
+          "solar_kwh": 19.3084,
+          "load_kwh": 15.1125,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": 4.1959,
+          "import_cost": 0.0
+        },
+        {
+          "day": 29,
+          "solar_kwh": 26.6011,
+          "load_kwh": 21.4638,
+          "import_kwh": 0.1401,
+          "export_kwh": 0.0,
+          "net_kwh": 5.1373,
+          "import_cost": 0.001
+        }
+      ]
+    },
+    {
+      "id": "studio_middle",
+      "metadata": {
+        "household_type": "studio",
+        "wealth_level": "middle"
+      },
+      "summary": {
+        "total_gen_kwh": 388.7264,
+        "total_load_kwh": 354.7554,
+        "total_grid_import_kwh": 36.9213,
+        "total_grid_export_kwh": 20.0,
+        "total_import_cost": 0.2769,
+        "total_export_revenue": 0.18,
+        "self_sufficiency_pct": 103.9,
+        "total_curtailed_kwh": 33.9875,
+        "total_surplus_kwh": 265.7257,
+        "total_deficit_kwh": 231.7547
+      },
+      "timeseries": [
+        {
+          "hour": 0,
+          "solar_kw": 0.0,
+          "load_kw": 0.3761,
+          "net_kwh": -0.376087,
+          "battery_soc_pct": 32.55,
+          "grid_import_kwh": 0.033202,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 1,
+          "solar_kw": 0.0,
+          "load_kw": 0.3361,
+          "net_kwh": -0.33606,
+          "battery_soc_pct": 29.46,
+          "grid_import_kwh": 0.043367,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 2,
+          "solar_kw": 0.0,
+          "load_kw": 0.2981,
+          "net_kwh": -0.298067,
+          "battery_soc_pct": 26.82,
+          "grid_import_kwh": 0.04778,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 3,
+          "solar_kw": 0.0,
+          "load_kw": 0.318,
+          "net_kwh": -0.318043,
+          "battery_soc_pct": 24.2,
+          "grid_import_kwh": 0.06913,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 4,
+          "solar_kw": 0.0,
+          "load_kw": 0.3121,
+          "net_kwh": -0.312065,
+          "battery_soc_pct": 22.21,
+          "grid_import_kwh": 0.123598,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 5,
+          "solar_kw": 0.0,
+          "load_kw": 0.3491,
+          "net_kwh": -0.349122,
+          "battery_soc_pct": 19.39,
+          "grid_import_kwh": 0.081051,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 6,
+          "solar_kw": 0.0,
+          "load_kw": 0.2707,
+          "net_kwh": -0.270678,
+          "battery_soc_pct": 17.6,
+          "grid_import_kwh": 0.101548,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 7,
+          "solar_kw": 0.4415,
+          "load_kw": 0.86,
+          "net_kwh": -0.418505,
+          "battery_soc_pct": 14.93,
+          "grid_import_kwh": 0.164802,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 8,
+          "solar_kw": 0.853,
+          "load_kw": 0.9794,
+          "net_kwh": -0.12641,
+          "battery_soc_pct": 14.51,
+          "grid_import_kwh": 0.100901,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 9,
+          "solar_kw": 1.2063,
+          "load_kw": 0.3209,
+          "net_kwh": 0.885372,
+          "battery_soc_pct": 23.07,
+          "grid_import_kwh": 0.01679,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 10,
+          "solar_kw": 1.4774,
+          "load_kw": 0.3635,
+          "net_kwh": 1.1138,
+          "battery_soc_pct": 33.63,
+          "grid_import_kwh": 0.0,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 11,
+          "solar_kw": 1.6478,
+          "load_kw": 0.5266,
+          "net_kwh": 1.121214,
+          "battery_soc_pct": 44.18,
+          "grid_import_kwh": 0.0,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 12,
+          "solar_kw": 1.7059,
+          "load_kw": 0.2691,
+          "net_kwh": 1.436789,
+          "battery_soc_pct": 57.81,
+          "grid_import_kwh": 0.0,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 13,
+          "solar_kw": 1.6478,
+          "load_kw": 0.4241,
+          "net_kwh": 1.223664,
+          "battery_soc_pct": 66.92,
+          "grid_import_kwh": 0.0,
+          "grid_export_kwh": 0.106264
+        },
+        {
+          "hour": 14,
+          "solar_kw": 1.4774,
+          "load_kw": 0.4689,
+          "net_kwh": 1.008427,
+          "battery_soc_pct": 71.09,
+          "grid_import_kwh": 0.0,
+          "grid_export_kwh": 0.191829
+        },
+        {
+          "hour": 15,
+          "solar_kw": 1.2063,
+          "load_kw": 0.2614,
+          "net_kwh": 0.944882,
+          "battery_soc_pct": 75.23,
+          "grid_import_kwh": 0.0,
+          "grid_export_kwh": 0.179421
+        },
+        {
+          "hour": 16,
+          "solar_kw": 0.853,
+          "load_kw": 0.3906,
+          "net_kwh": 0.462317,
+          "battery_soc_pct": 76.3,
+          "grid_import_kwh": 0.0,
+          "grid_export_kwh": 0.141595
+        },
+        {
+          "hour": 17,
+          "solar_kw": 0.4415,
+          "load_kw": 0.3499,
+          "net_kwh": 0.091605,
+          "battery_soc_pct": 76.46,
+          "grid_import_kwh": 0.063574,
+          "grid_export_kwh": 0.047558
+        },
+        {
+          "hour": 18,
+          "solar_kw": 0.0,
+          "load_kw": 1.118,
+          "net_kwh": -1.118012,
+          "battery_soc_pct": 65.09,
+          "grid_import_kwh": 0.039112,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 19,
+          "solar_kw": 0.0,
+          "load_kw": 1.1563,
+          "net_kwh": -1.156285,
+          "battery_soc_pct": 54.26,
+          "grid_import_kwh": 0.128734,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 20,
+          "solar_kw": 0.0,
+          "load_kw": 1.1008,
+          "net_kwh": -1.100813,
+          "battery_soc_pct": 43.93,
+          "grid_import_kwh": 0.121325,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 21,
+          "solar_kw": 0.0,
+          "load_kw": 0.2437,
+          "net_kwh": -0.243695,
+          "battery_soc_pct": 41.7,
+          "grid_import_kwh": 0.031633,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 22,
+          "solar_kw": 0.0,
+          "load_kw": 0.3141,
+          "net_kwh": -0.314065,
+          "battery_soc_pct": 38.68,
+          "grid_import_kwh": 0.027834,
+          "grid_export_kwh": 0.0
+        },
+        {
+          "hour": 23,
+          "solar_kw": 0.0,
+          "load_kw": 0.4178,
+          "net_kwh": -0.417798,
+          "battery_soc_pct": 34.66,
+          "grid_import_kwh": 0.03633,
+          "grid_export_kwh": 0.0
+        }
+      ],
+      "by_day": [
+        {
+          "day": 0,
+          "solar_kwh": 14.0095,
+          "load_kwh": 15.5193,
+          "import_kwh": 0.3832,
+          "export_kwh": 0.0,
+          "net_kwh": -1.5097,
+          "import_cost": 0.0029
+        },
+        {
+          "day": 1,
+          "solar_kwh": 11.7458,
+          "load_kwh": 9.9668,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": 1.7789,
+          "import_cost": 0.0
+        },
+        {
+          "day": 2,
+          "solar_kwh": 11.791,
+          "load_kwh": 12.2949,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": -0.5039,
+          "import_cost": 0.0
+        },
+        {
+          "day": 3,
+          "solar_kwh": 21.5116,
+          "load_kwh": 9.5281,
+          "import_kwh": 0.0,
+          "export_kwh": 8.1078,
+          "net_kwh": 11.9836,
+          "import_cost": 0.0
+        },
+        {
+          "day": 4,
+          "solar_kwh": 19.2428,
+          "load_kwh": 13.1189,
+          "import_kwh": 0.0,
+          "export_kwh": 4.9779,
+          "net_kwh": 6.1239,
+          "import_cost": 0.0
+        },
+        {
+          "day": 5,
+          "solar_kwh": 5.7562,
+          "load_kwh": 9.1614,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": -3.4052,
+          "import_cost": 0.0
+        },
+        {
+          "day": 6,
+          "solar_kwh": 20.5347,
+          "load_kwh": 14.4607,
+          "import_kwh": 0.2508,
+          "export_kwh": 1.9646,
+          "net_kwh": 6.0741,
+          "import_cost": 0.0019
+        },
+        {
+          "day": 7,
+          "solar_kwh": 8.2526,
+          "load_kwh": 9.498,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": -1.2454,
+          "import_cost": 0.0
+        },
+        {
+          "day": 8,
+          "solar_kwh": 13.7508,
+          "load_kwh": 13.26,
+          "import_kwh": 2.3828,
+          "export_kwh": 0.0,
+          "net_kwh": 0.4908,
+          "import_cost": 0.0179
+        },
+        {
+          "day": 9,
+          "solar_kwh": 9.6613,
+          "load_kwh": 8.8594,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": 0.8019,
+          "import_cost": 0.0
+        },
+        {
+          "day": 10,
+          "solar_kwh": 9.6694,
+          "load_kwh": 13.4676,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": -3.7982,
+          "import_cost": 0.0
+        },
+        {
+          "day": 11,
+          "solar_kwh": 18.0882,
+          "load_kwh": 9.5724,
+          "import_kwh": 1.6252,
+          "export_kwh": 4.417,
+          "net_kwh": 8.5158,
+          "import_cost": 0.0122
+        },
+        {
+          "day": 12,
+          "solar_kwh": 9.4076,
+          "load_kwh": 12.622,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": -3.2144,
+          "import_cost": 0.0
+        },
+        {
+          "day": 13,
+          "solar_kwh": 21.6114,
+          "load_kwh": 10.4725,
+          "import_kwh": 0.5947,
+          "export_kwh": 0.5328,
+          "net_kwh": 11.1389,
+          "import_cost": 0.0045
+        },
+        {
+          "day": 14,
+          "solar_kwh": 11.1397,
+          "load_kwh": 13.8914,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": -2.7518,
+          "import_cost": 0.0
+        },
+        {
+          "day": 15,
+          "solar_kwh": 8.3667,
+          "load_kwh": 13.4858,
+          "import_kwh": 4.4074,
+          "export_kwh": 0.0,
+          "net_kwh": -5.119,
+          "import_cost": 0.0331
+        },
+        {
+          "day": 16,
+          "solar_kwh": 7.711,
+          "load_kwh": 15.6724,
+          "import_kwh": 8.3207,
+          "export_kwh": 0.0,
+          "net_kwh": -7.9614,
+          "import_cost": 0.0624
+        },
+        {
+          "day": 17,
+          "solar_kwh": 7.8994,
+          "load_kwh": 9.5321,
+          "import_kwh": 2.5711,
+          "export_kwh": 0.0,
+          "net_kwh": -1.6327,
+          "import_cost": 0.0193
+        },
+        {
+          "day": 18,
+          "solar_kwh": 18.9167,
+          "load_kwh": 10.055,
+          "import_kwh": 1.5174,
+          "export_kwh": 0.0,
+          "net_kwh": 8.8617,
+          "import_cost": 0.0114
+        },
+        {
+          "day": 19,
+          "solar_kwh": 17.0522,
+          "load_kwh": 12.857,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": 4.1951,
+          "import_cost": 0.0
+        },
+        {
+          "day": 20,
+          "solar_kwh": 8.3136,
+          "load_kwh": 11.9685,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": -3.6549,
+          "import_cost": 0.0
+        },
+        {
+          "day": 21,
+          "solar_kwh": 8.2748,
+          "load_kwh": 14.1469,
+          "import_kwh": 5.3167,
+          "export_kwh": 0.0,
+          "net_kwh": -5.8721,
+          "import_cost": 0.0399
+        },
+        {
+          "day": 22,
+          "solar_kwh": 12.0547,
+          "load_kwh": 13.06,
+          "import_kwh": 2.3821,
+          "export_kwh": 0.0,
+          "net_kwh": -1.0053,
+          "import_cost": 0.0179
+        },
+        {
+          "day": 23,
+          "solar_kwh": 19.5867,
+          "load_kwh": 9.2396,
+          "import_kwh": 1.2947,
+          "export_kwh": 0.0,
+          "net_kwh": 10.3471,
+          "import_cost": 0.0097
+        },
+        {
+          "day": 24,
+          "solar_kwh": 19.7182,
+          "load_kwh": 14.4645,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": 5.2537,
+          "import_cost": 0.0
+        },
+        {
+          "day": 25,
+          "solar_kwh": 18.6041,
+          "load_kwh": 13.4567,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": 5.1474,
+          "import_cost": 0.0
+        },
+        {
+          "day": 26,
+          "solar_kwh": 8.9285,
+          "load_kwh": 9.7107,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": -0.7822,
+          "import_cost": 0.0
+        },
+        {
+          "day": 27,
+          "solar_kwh": 17.2615,
+          "load_kwh": 10.979,
+          "import_kwh": 0.2313,
+          "export_kwh": 0.0,
+          "net_kwh": 6.2825,
+          "import_cost": 0.0017
+        },
+        {
+          "day": 28,
+          "solar_kwh": 4.5383,
+          "load_kwh": 9.6065,
+          "import_kwh": 0.0,
+          "export_kwh": 0.0,
+          "net_kwh": -5.0682,
+          "import_cost": 0.0
+        },
+        {
+          "day": 29,
+          "solar_kwh": 5.3272,
+          "load_kwh": 10.8273,
+          "import_kwh": 5.6431,
+          "export_kwh": 0.0,
+          "net_kwh": -5.5,
+          "import_cost": 0.0423
+        }
+      ]
+    }
+  ]
+}

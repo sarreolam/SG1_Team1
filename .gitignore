@@ -210,3 +210,33 @@ __marimo__/
 *.xls
 *.xlsx
 *.csv
+
+# dependencies
+node_modules/
+
+# build outputs
+dist/
+build/
+out/
+
+# bit build artifacts
+.bit/capsules/
+.bit/components/
+.bit/cache/
+.bit/logs/
+
+# env files
+.env
+.env.local
+.env.*.local
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
