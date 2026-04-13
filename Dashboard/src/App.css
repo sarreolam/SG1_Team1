@@ -21,7 +21,6 @@ body {
   background: linear-gradient(180deg, #f7fafc 0%, #eef3f8 100%);
 }
 
-/* HEADER */
 .dashboard-header {
   width: 100%;
   max-width: 1400px;
@@ -65,7 +64,7 @@ body {
   margin-bottom: 8px;
 }
 
-/* CONTENIDO */
+
 .dashboard-content {
   max-width: 1400px;
   margin: 0 auto;
@@ -98,7 +97,6 @@ body {
   text-align: right;
 }
 
-/* GRIDS */
 .grid-one,
 .grid-two,
 .grid-three {
@@ -122,7 +120,7 @@ body {
   grid-template-columns: 1fr 1.1fr 1fr;
 }
 
-/* CARDS (CLAVE 🔥 sin alturas forzadas) */
+
 .card,
 .card-full,
 .final-summary-card {
@@ -133,7 +131,7 @@ body {
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.04);
 }
 
-/* 👇 AQUÍ ESTABA EL PROBLEMA */
+
 .card,
 .card-full {
   min-height: unset;
@@ -153,7 +151,7 @@ body {
   padding-top: 0;
 }
 
-/* evita que SVGs chiquitos dejen espacios enormes */
+
 .chart-shell > * {
   flex-shrink: 0;
 }
