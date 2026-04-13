@@ -1,0 +1,38 @@
+[
+  {
+    "wealth_level": "high",
+    "generation_kwh": 400.957838,
+    "load_kwh": 619.94982,
+    "import_kwh": 279.214876,
+    "export_kwh": 48.731446,
+    "avg_soc_pct": 21.843486111111112,
+    "net_cost": 1.655526
+  },
+  {
+    "wealth_level": "low",
+    "generation_kwh": 271.164684,
+    "load_kwh": 241.082808,
+    "import_kwh": 40.381727,
+    "export_kwh": 54.028626,
+    "avg_soc_pct": 34.54815277777777,
+    "net_cost": -0.183388
+  },
+  {
+    "wealth_level": "luxury",
+    "generation_kwh": 424.542508,
+    "load_kwh": 1409.169055,
+    "import_kwh": 998.869595,
+    "export_kwh": 11.486251,
+    "avg_soc_pct": 10.82651388888889,
+    "net_cost": 7.388157
+  },
+  {
+    "wealth_level": "middle",
+    "generation_kwh": 265.385584,
+    "load_kwh": 519.986082,
+    "import_kwh": 293.802507,
+    "export_kwh": 26.918279,
+    "avg_soc_pct": 16.628611111111113,
+    "net_cost": 1.96125
+  }
+]

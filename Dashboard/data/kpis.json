@@ -1,0 +1,11 @@
+{
+  "total_generation_kwh": 1362.05,
+  "total_load_kwh": 2790.19,
+  "total_grid_import_kwh": 1612.27,
+  "total_grid_export_kwh": 141.16,
+  "total_curtailed_kwh": 0.0,
+  "avg_battery_soc_pct": 20.96,
+  "net_cost": 10.82,
+  "household_count": 4,
+  "avg_cloud_coverage": 0.7181
+}

@@ -1,0 +1,19 @@
+{
+  "seasons": [
+    "summer"
+  ],
+  "strategies": [
+    "load_priority"
+  ],
+  "household_types": [
+    "large_family",
+    "small_family",
+    "studio"
+  ],
+  "wealth_levels": [
+    "high",
+    "low",
+    "luxury",
+    "middle"
+  ]
+}

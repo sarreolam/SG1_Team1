@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
-import data from "../../../Simulation/Dashboard/data/all_energy_simulations.json";
+import data from "../../data/duck_curve.json";
 
 
 const DuckCurve = () => {
@@ -9,22 +9,16 @@ const DuckCurve = () => {
     useEffect(()=> {
         const hours = d3.range(24);
 
-        const hourTotals = hours.map((h)=> {
-            let totalSolar = 0, totalLoad = 0, count = 0;
-            data.simulations.forEach((sim) => {
-                sim.timeseries.filter((d)=> d.hour === h).forEach((d)=> {
-                    totalSolar += d.solar_kw;
-                    totalLoad += d.load_kw;
-                    count++;
-                });
-            });
+        const hourTotals = hours.map((h) => {
+            const points = data.filter((d) => d.hour === h);
+
             return {
                 hour: h,
-                solar: totalSolar/count,
-                load: totalLoad/count,
-                net: (totalLoad - totalSolar) / count
-            }
-        })
+                solar: d3.mean(points, (d) => d.solar_kw_used),
+                load: d3.mean(points, (d) => d.load_kw),
+                net: d3.mean(points, (d) => d.net_load_kw)
+            };
+        });
         const margin = { top: 30, right: 30, bottom: 50, left: 60 };
         const width  = 560 - margin.left - margin.right;
         const height = 320 - margin.top  - margin.bottom;

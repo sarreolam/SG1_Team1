@@ -1,0 +1,46 @@
+[
+  {
+    "household_name": "studio_low_01",
+    "household_type": "studio",
+    "wealth_level": "low",
+    "total_generation_kwh": 271.164684,
+    "total_load_kwh": 241.082808,
+    "total_import_kwh": 40.381727,
+    "total_export_kwh": 54.028626,
+    "net_cost": -0.183388,
+    "avg_soc_pct": 34.54815277777777
+  },
+  {
+    "household_name": "family_high_01",
+    "household_type": "small_family",
+    "wealth_level": "high",
+    "total_generation_kwh": 400.957838,
+    "total_load_kwh": 619.94982,
+    "total_import_kwh": 279.214876,
+    "total_export_kwh": 48.731446,
+    "net_cost": 1.655526,
+    "avg_soc_pct": 21.843486111111112
+  },
+  {
+    "household_name": "family_mid_01",
+    "household_type": "small_family",
+    "wealth_level": "middle",
+    "total_generation_kwh": 265.385584,
+    "total_load_kwh": 519.986082,
+    "total_import_kwh": 293.802507,
+    "total_export_kwh": 26.918279,
+    "net_cost": 1.96125,
+    "avg_soc_pct": 16.628611111111113
+  },
+  {
+    "household_name": "large_luxury_01",
+    "household_type": "large_family",
+    "wealth_level": "luxury",
+    "total_generation_kwh": 424.542508,
+    "total_load_kwh": 1409.169055,
+    "total_import_kwh": 998.869595,
+    "total_export_kwh": 11.486251,
+    "net_cost": 7.388157,
+    "avg_soc_pct": 10.82651388888889
+  }
+]

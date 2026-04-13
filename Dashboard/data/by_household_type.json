@@ -1,0 +1,29 @@
+[
+  {
+    "household_type": "large_family",
+    "generation_kwh": 424.542508,
+    "load_kwh": 1409.169055,
+    "import_kwh": 998.869595,
+    "export_kwh": 11.486251,
+    "avg_soc_pct": 10.82651388888889,
+    "net_cost": 7.388157
+  },
+  {
+    "household_type": "small_family",
+    "generation_kwh": 666.343422,
+    "load_kwh": 1139.935902,
+    "import_kwh": 573.017383,
+    "export_kwh": 75.649725,
+    "avg_soc_pct": 19.236048611111112,
+    "net_cost": 3.616776
+  },
+  {
+    "household_type": "studio",
+    "generation_kwh": 271.164684,
+    "load_kwh": 241.082808,
+    "import_kwh": 40.381727,
+    "export_kwh": 54.028626,
+    "avg_soc_pct": 34.54815277777777,
+    "net_cost": -0.183388
+  }
+]

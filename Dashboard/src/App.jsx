@@ -29,6 +29,7 @@ function App() {
           <h1>Get started</h1>
           <p>
             <DuckCurve/>
+            <BatteryUtilizationChart/>
             <ProductionVsConsumption/>
             <HouseholdComparison/>
             <WealthLevelChart/>
@@ -36,7 +37,6 @@ function App() {
             <SurplusDeficitChart/>
             <CostSavingsChart/>
             <GridExportChart/>
-            <BatteryUtilizationChart/>
           </p>
         </div>
         
