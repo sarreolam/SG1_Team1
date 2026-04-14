@@ -1,28 +1,41 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import * as d3 from "d3";
 import sim_data from "../../../Simulation/Dashboard/data/all_energy_simulations.json";
 
 const SurplusDeficitChart = () => {
     const ref = useRef();
+    const [householdType, setHouseholdType] = useState("all");
+
+    const householdTypes = useMemo(() => {
+        const values = sim_data.simulations.map((sim) => sim.metadata.household_type);
+        return ["all", ...new Set(values)];
+    }, []);
     
     useEffect(()=>{
-        const chartData = sim_data.simulations.map((sim)=>{
-            const surplus = d3.sum(sim.timeseries.filter((d)=> d.net_kwh > 0 ), (d)=> d.net_kwh);
-            const deficit = d3.sum(sim.timeseries.filter((d)=> d.net_kwh < 0 ), (d)=> -d.net_kwh);
-            return {
-                label:  sim.id, surplus, deficit
-            };
-        });
+        const filtered = sim_data.simulations.filter((sim) => 
+            householdType === "all" || sim.metadata.household_type === householdType
+        );
+
+        const chartData = filtered.map((sim) => ({
+            label:  sim.id,
+            surplus: d3.sum(sim.timeseries.filter((d)=> d.net_kwh > 0 ), (d)=> d.net_kwh),
+            deficit: d3.sum(sim.timeseries.filter((d)=> d.net_kwh < 0 ), (d)=> -d.net_kwh),
+        }));
         
         const margin = { top: 30, right: 30, bottom: 70, left: 70 };
         const width  = 500 - margin.left - margin.right;
         const height = 320 - margin.top  - margin.bottom;
 
         const svg = d3.select(ref.current)
-        .attr("width",  width  + margin.left + margin.right)
-        .attr("height", height + margin.top  + margin.bottom);
+            .attr("width",  width  + margin.left + margin.right)
+            .attr("height", height + margin.top  + margin.bottom);
         svg.selectAll("*").remove();
 
+        if (chartData.length === 0) {
+            svg.append("text").attr("x", 20).attr("y", 40).style("fill", "#CCC").text("No data for this filter.");
+            return;
+        }
+        
         const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
 
         const subgroups = ["surplus", "deficit"];
@@ -83,9 +96,22 @@ const SurplusDeficitChart = () => {
             .style("font-size", "11px")
             .text(key.charAt(0).toUpperCase() + key.slice(1));
         });
-    }, [])
+    }, [householdType])
 
-    return <svg ref={ref}/>
+    return (
+        <div>
+            <div className="chart-filters">
+                <select value={householdType} onChange={(e) => setHouseholdType(e.target.value)}>
+                    {householdTypes.map((t) => (
+                        <option key={t} value={t}>
+                            {t === "all" ? "All household types" : t.replace(/_/g, " ")}
+                        </option>
+                    ))}
+                </select>
+            </div>
+            <svg ref={ref} />
+        </div>
+    );
 
 }
 

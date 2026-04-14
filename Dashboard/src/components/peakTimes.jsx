@@ -1,12 +1,22 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import * as d3 from "d3";
 import sim_data from "../../../Simulation/Dashboard/data/all_energy_simulations.json";
 
 const PeakTimes = () => {
     const ref = useRef();
+    const [householdType, setHouseholdType] = useState("all");
+
+    const householdTypes = useMemo(() => {
+        const values = sim_data.simulations.map((sim) => sim.metadata.household_type);
+        return ["all", ...new Set(values)];
+    }, []);
 
     useEffect(()=> {
-        const peakData = sim_data.simulations.map((sim)=>{
+        const filtered = sim_data.simulations.filter((s) =>
+            householdType === "all" || s.metadata.household_type === householdType
+        );
+
+        const peakData = filtered.map((sim)=>{
             const peakSolar = d3.greatest(sim.timeseries, (d)=> d.solar_kw);
             const peakLoad = d3.greatest(sim.timeseries, (d)=> d.load_kw);
             return {
@@ -18,7 +28,7 @@ const PeakTimes = () => {
             };
         });
         
-        const margin = { top: 30, right: 30, bottom: 70, left: 65 };
+        const margin = { top: 30, right: 30, bottom: 70, left: 115 };
         const width  = 500 - margin.left - margin.right;
         const height = 320 - margin.top  - margin.bottom;
 
@@ -26,6 +36,12 @@ const PeakTimes = () => {
         .attr("width",  width  + margin.left + margin.right)
         .attr("height", height + margin.top  + margin.bottom);
         svg.selectAll("*").remove();
+
+        if (peakData.length === 0) {
+            svg.append("text").attr("x", 20).attr("y", 40)
+                .style("fill", "#ccc").text("No data for this filter.");
+            return;
+        }
 
         const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
 
@@ -89,10 +105,22 @@ const PeakTimes = () => {
         legend.append("text").attr("x", 16).attr("y", i * 30 + 10).style("font-size", "11px").text(label);
         });
 
-    }, []);
+    }, [householdType]);
 
-  return <svg ref={ref} />;
-    
+  return (
+        <div>
+            <div className="chart-filters">
+                <select value={householdType} onChange={(e) => setHouseholdType(e.target.value)}>
+                    {householdTypes.map((t) => (
+                        <option key={t} value={t}>
+                            {t === "all" ? "All household types" : t.replace(/_/g, " ")}
+                        </option>
+                    ))}
+                </select>
+            </div>
+            <svg ref={ref} />
+        </div>
+    );
 }
 
 

@@ -1,14 +1,24 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import * as d3 from "d3";
 import sim_data from "../../../Simulation/Dashboard/data/all_energy_simulations.json";
 
 const CostSavingsChart = () => {
     const ref = useRef();
+    const [householdType, setHouseholdType] = useState("all");
+
+    const householdTypes = useMemo(() => {
+        const values = sim_data.simulations.map((sim) => sim.metadata.household_type);
+        return ["all", ...new Set(values)];
+    }, []);
 
     useEffect(()=>{
         const IMPORT_RATE = 0.28; //Costo de grid
 
-        const chartData = sim_data.simulations.map((sim)=>{
+        const filtered = sim_data.simulations.filter((sim) =>
+            householdType === "all" || sim.metadata.household_type === householdType
+        );
+
+        const chartData = filtered.map((sim)=>{
             const {total_load_kwh, total_grid_import_kwh, total_import_cost, total_export_revenue} = sim.summary;
             const selfConsumed = total_load_kwh - total_grid_import_kwh;
             const grossCostWithout = total_load_kwh * IMPORT_RATE;
@@ -31,6 +41,12 @@ const CostSavingsChart = () => {
         .attr("width",  width  + margin.left + margin.right)
         .attr("height", height + margin.top  + margin.bottom);
         svg.selectAll("*").remove();
+
+        if (chartData.length === 0) {
+            svg.append("text").attr("x", 20).attr("y", 40)
+                .style("fill", "#ccc").text("No data for this filter.");
+            return;
+        }
 
         const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
 
@@ -101,9 +117,22 @@ const CostSavingsChart = () => {
             .text(labels[key]);
         });
 
-    }, [])
+    }, [householdType])
 
-    return <svg ref={ref}/>
+    return (
+        <div>
+            <div className="chart-filters">
+                <select value={householdType} onChange={(e) => setHouseholdType(e.target.value)}>
+                    {householdTypes.map((t) => (
+                        <option key={t} value={t}>
+                            {t === "all" ? "All household types" : t.replace(/_/g, " ")}
+                        </option>
+                    ))}
+                </select>
+            </div>
+            <svg ref={ref} />
+        </div>
+    );
 }
 
 export default CostSavingsChart

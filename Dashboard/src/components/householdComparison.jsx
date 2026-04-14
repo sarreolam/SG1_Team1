@@ -135,7 +135,7 @@ const HouseholdComparison = () => {
 
   return (
     <div>
-      <div style={{ display: "flex", gap: "12px", marginBottom: "12px" }}>
+      <div className="chart-filters">
         <select value={householdType} onChange={(e) => setHouseholdType(e.target.value)}>
           {householdTypes.map((type) => (
             <option key={type} value={type}>

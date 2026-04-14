@@ -1,9 +1,15 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import * as d3 from "d3";
 import sim_data from "../../../Simulation/Dashboard/data/all_energy_simulations.json";
 
 const BatteryUtilizationChart = () => {
   const ref = useRef();
+  const [householdType, setHouseholdType] = useState("all");
+
+  const householdTypes = useMemo(() => {
+      const values = sim_data.simulations.map((sim) => sim.metadata.household_type);
+      return ["all", ...new Set(values)];
+  }, []);
 
   useEffect(() => {
     const hours = d3.range(24);
@@ -14,6 +20,16 @@ const BatteryUtilizationChart = () => {
       .attr("width", width)
       .attr("height", height);
     svg.selectAll("*").remove();
+
+    const filtered = sim_data.simulations.filter((s) =>
+      householdType === "all" || s.metadata.household_type === householdType
+    );
+
+    if (filtered.length === 0) {
+      svg.append("text").attr("x", 20).attr("y", 40)
+        .style("fill", "#ccc").text("No data for this filter.");
+      return;
+    }
 
     const colors = {
       studio_middle:       "#4a90d9",
@@ -26,14 +42,14 @@ const BatteryUtilizationChart = () => {
     const maxRadius = 120;
     const minRadius = 30;
 
-    const simCount = sim_data.simulations.length;
+    const simCount = filtered.length;
 
-    sim_data.simulations.forEach((sim, simIdx) => {
+    filtered.forEach((sim, simIdx) => {
       const hourlySOC = hours.map((h) => {
-        const points = sim.timeseries.filter((d) => d.hour === h);
+        const point = sim.timeseries.find((d) => d.hour === h);
         return {
           hour: h,
-          soc:  d3.mean(points, (d) => d.battery_soc_pct),
+          soc:  point ? point.battery_soc_pct : 0
         };
       });
 
@@ -83,7 +99,7 @@ const BatteryUtilizationChart = () => {
     const legend = svg.append("g")
       .attr("transform", `translate(${width / 2 - 150}, ${height - 22})`);
 
-    sim_data.simulations.forEach((sim, i) => {
+    filtered.forEach((sim, i) => {
       legend.append("rect")
         .attr("x", i * 140).attr("y", 0)
         .attr("width", 10).attr("height", 10)
@@ -94,9 +110,22 @@ const BatteryUtilizationChart = () => {
         .text(sim.id.replace(/_/g, " "));
     });
 
-  }, []);
+  }, [householdType]);
 
-  return <svg ref={ref} />;
+  return (
+    <div>
+        <div className="chart-filters">
+          <select value={householdType} onChange={(e) => setHouseholdType(e.target.value)}>
+            {householdTypes.map((t) => (
+              <option key={t} value={t}>
+                {t === "all" ? "All household types" : t.replace(/_/g, " ")}
+              </option>
+            ))}
+          </select>
+        </div>
+      <svg ref={ref} />
+    </div>
+  );
 };
 
 export default BatteryUtilizationChart;

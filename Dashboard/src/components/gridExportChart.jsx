@@ -1,12 +1,22 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import * as d3 from "d3";
 import sim_data from "../../../Simulation/Dashboard/data/all_energy_simulations.json";
 
 const GridExportChart = () => {
   const ref = useRef();
+  const [householdType, setHouseholdType] = useState("all");
+
+  const householdTypes = useMemo(() => {
+    const values = sim_data.simulations.map((sim) => sim.metadata.household_type);
+    return ["all", ...new Set(values)];
+  }, []);
 
   useEffect(() => {
-    const chartData = sim_data.simulations.map((sim) => ({
+    const filtered = sim_data.simulations.filter((sim) =>
+      householdType === "all" || sim.metadata.household_type === householdType
+    );
+
+    const chartData = filtered.map((sim) => ({
       label: sim.id,
       exported:   sim.summary.total_grid_export_kwh,
       selfUsed:   sim.summary.total_load_kwh - sim.summary.total_grid_import_kwh,
@@ -21,6 +31,12 @@ const GridExportChart = () => {
       .attr("width", width)
       .attr("height", height);
     svg.selectAll("*").remove();
+
+    if (chartData.length === 0) {
+      svg.append("text").attr("x", 20).attr("y", 40)
+          .style("fill", "#ccc").text("No data for this filter.");
+      return;
+    }
 
     const colors = {
       exported: "#4a90d9",
@@ -86,9 +102,22 @@ const GridExportChart = () => {
         .text(label);
     });
 
-  }, []);
+  }, [householdType]);
 
-  return <svg ref={ref} />;
+  return (
+        <div>
+            <div className="chart-filters">
+                <select value={householdType} onChange={(e) => setHouseholdType(e.target.value)}>
+                    {householdTypes.map((t) => (
+                        <option key={t} value={t}>
+                            {t === "all" ? "All household types" : t.replace(/_/g, " ")}
+                        </option>
+                    ))}
+                </select>
+            </div>
+            <svg ref={ref} />
+        </div>
+    );
 };
 
 export default GridExportChart;
