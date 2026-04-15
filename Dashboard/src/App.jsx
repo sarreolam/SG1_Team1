@@ -173,12 +173,6 @@ function App() {
           <div className="grid-three operational">
             <div className="card">
               <div className="chart-shell compact">
-                <CostSavingsChart />
-              </div>
-            </div>
-
-            <div className="card">
-              <div className="chart-shell compact">
                 <GridExportChart />
               </div>
             </div>
