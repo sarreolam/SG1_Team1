@@ -134,6 +134,32 @@ function App() {
             </div>
         </section>
 
+        <section style={{ 
+          display: "grid", 
+          gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", 
+          gap: "30px", 
+          alignItems: "center",
+          margin: "40px 0" 
+        }}>
+          <div style={{ borderRadius: "20px", overflow: "hidden", height: "350px" }}>
+            <img 
+              src="https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&q=80&w=1000" 
+              alt="Solar Panels" 
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          </div>
+          <div>
+            <p className="section-kicker">The Future of the Neighborhood</p>
+            <h2 style={{ fontSize: "28px", margin: "10px 0" }}>Beyond Generation</h2>
+            <p style={{ color: "#475569", lineHeight: "1.6" }}>
+              Our simulation is not just about numbers; it is about the real-world transition 
+              to energy independence. As more households adopt storage solutions, 
+              the neighborhood moves from being a burden on the city grid to becoming 
+              a resilient, self-sustaining power plant.
+            </p>
+          </div>
+        </section>
+
         <section className="section-block">
           <div className="section-title-row">
             <div>
