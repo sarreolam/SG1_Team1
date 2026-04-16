@@ -3,8 +3,9 @@
 ### Prerequisites
 - **Python 3.10+** (3.11 recommended)
 - `pip` (comes with most Python installs)
+- `npm` 
 
-### 1) Clone the repository
+### Clone the repository
 ```bash
 git clone https://github.com/sarreolam/SG1_Team1.git
 cd SG1_Team1
@@ -12,7 +13,7 @@ cd SG1_Team1
 
 Windows (CMD)
 ```bash
-python -m venv .venv
+python -m venv venv
 .\.venv\Scripts\activate.bat
 ```
 
@@ -28,13 +29,120 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-Run the simulation
+## Run the simulation
 ```bash
 cd simulation
-python green_grid_sim.py
+py .\run_neighborhood.py   
 ```
 
-Outputs:
-- After the run finishes, CSV files are generated in:
-output/log.csv (timestep-by-timestep measurements)
-- output/events.csv (events such as inverter failures, battery full/low, curtailment)
+## Creating Custom Scenarios
+
+You can run multiple simulations by creating your own scenario configuration.
+Define a `SCENARIO` using `ScenarioConfig` and add as many households as needed.
+
+Example:
+
+```python
+SCENARIO = ScenarioConfig(
+    name="neighborhood_mix",
+    simulation=SimulationConfig(
+        duration_days=30,
+        timestep_minutes=60,
+        season="summer",
+        strategy=EnergyStrategy.LOAD_PRIORITY,
+        seed=7,
+    ),
+    households=[
+        HouseholdConfig(
+            name="studio_low_01",
+            household_type=HouseholdType.STUDIO,
+            wealth_level=WealthLevel.LOW,
+            battery=BatteryConfig(capacity_kwh=10.0),
+            solar=SolarConfig(panel_capacity_kw=4.0, inverter_max_output_kw=3.5),
+            load_shape=LoadShapeConfig(variability_multiplier=0.9),
+        ),
+        HouseholdConfig(
+            name="family_mid_01",
+            household_type=HouseholdType.SMALL_FAMILY,
+            wealth_level=WealthLevel.MIDDLE,
+        ),
+        # Add more households here...
+    ],
+)
+```
+
+You can define multiple households with different configurations (wealth level, solar, battery, etc.) to simulate diverse neighborhoods.
+
+---
+
+## Running a Scenario
+
+Create a run file that imports the scenario and executes the simulation:
+
+```python
+from greengrid import NeighborhoodSimulation
+from scenarios.neighborhood_mix import SCENARIO
+
+
+if __name__ == "__main__":
+    result = NeighborhoodSimulation(SCENARIO).run()
+    print("Run directory:", result["run_dir"])
+    print("Files:")
+    print(" -", result["household_csv"])
+    print(" -", result["neighborhood_csv"])
+    print(" -", result["events_csv"])
+    print(" -", result["summary_csv"])
+```
+
+Running this script will:
+
+* Execute the simulation ⚡
+* Generate CSV outputs 📄
+* Automatically run `prep_data.py`
+* Produce JSON files ready for the dashboard 📊
+
+---
+
+## Preparing Data Manually
+
+If you want to prepare data from a previously generated simulation, you can run:
+
+Latest output:
+
+```bash
+py .\DataPrep\prepare_data.py --source output/latest
+```
+
+Specific scenario run:
+
+```bash
+py .\DataPrep\prepare_data.py --source output/scenarioname_date_hour
+```
+
+This will regenerate the JSON files used by the dashboard.
+
+---
+
+## Running the Dashboard
+
+Open a new terminal and navigate to the project:
+
+```bash
+cd SG1_Team1
+cd Dashboard
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run the development server:
+
+```bash
+npm run dev
+```
+
+The dashboard will load the prepared JSON data and display the simulation results in real time 🎯
+
