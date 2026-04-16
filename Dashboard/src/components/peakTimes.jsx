@@ -123,7 +123,7 @@ export default function PeakTimes() {
       .attr("y", 20)
       .attr("font-size", "10px")
       .attr("fill", "#94a3b8")
-      .text("Bajo");
+      .text("Low");
     legG
       .append("text")
       .attr("x", legendW)
@@ -131,7 +131,7 @@ export default function PeakTimes() {
       .attr("text-anchor", "end")
       .attr("font-size", "10px")
       .attr("fill", "#94a3b8")
-      .text(`Alto (${maxLoad.toFixed(1)} kW)`);
+      .text(`High (${maxLoad.toFixed(1)} kW)`);
 
     // Title in legend area
     svg
@@ -140,8 +140,7 @@ export default function PeakTimes() {
       .attr("y", height - margin.bottom + 36)
       .attr("font-size", "10px")
       .attr("fill", "#94a3b8")
-      .text("Intensidad de demanda (kW)");
-
+      .text("Demand intensity (kW)");
     // Tooltip
     const tooltip = d3
       .select("body")
@@ -167,8 +166,8 @@ export default function PeakTimes() {
           .style("left", event.clientX + 14 + "px")
           .style("top", event.clientY - 10 + "px")
           .html(
-            `<b>Día ${d.day} · ${String(d.hour).padStart(2, "0")}:00h</b><br/>
-            Demanda: <b>${d.load.toFixed(2)} kW</b><br/>
+            `<b>Day ${d.day} · ${String(d.hour).padStart(2, "0")}:00h</b><br/>
+            Demand: <b>${d.load.toFixed(2)} kW</b><br/>
             Solar: <b>${d.solar.toFixed(2)} kW</b>`
           );
       })
@@ -179,10 +178,10 @@ export default function PeakTimes() {
     <div ref={containerRef} style={{ width: "100%" }}>
       <div style={{ marginBottom: 10 }}>
         <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "#1e293b" }}>
-          Mapa de calor — Picos de demanda
+        Heatmap — Demand peaks
         </h3>
         <p style={{ margin: "3px 0 0", fontSize: 12, color: "#94a3b8" }}>
-          Hora del día vs. día del mes · Color = intensidad de carga
+        Hour of day vs. day of month · Color = load intensity
         </p>
       </div>
       <svg ref={svgRef} style={{ width: "100%", overflow: "visible" }} />

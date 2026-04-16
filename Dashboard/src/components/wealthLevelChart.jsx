@@ -3,10 +3,10 @@ import * as d3 from "d3";
 import wealthData from "../../data/by_wealth_level.json";
 
 const WEALTH_LABELS = {
-  low: "Bajo",
-  middle: "Medio",
-  high: "Alto",
-  luxury: "Lujo",
+  low: "Low",
+  middle: "Middle",
+  high: "High",
+  luxury: "Luxury",
 };
 
 const WEALTH_ORDER = ["low", "middle", "high", "luxury"];
@@ -16,14 +16,14 @@ export default function WealthLevelChart() {
   const containerRef = useRef(null);
   const [metric, setMetric] = useState("generation_kwh");
 
-  const metrics = [
-    { key: "generation_kwh", label: "Generación (kWh)", color: "#f59e0b" },
-    { key: "load_kwh", label: "Consumo (kWh)", color: "#3b82f6" },
-    { key: "import_kwh", label: "Importación (kWh)", color: "#ef4444" },
-    { key: "export_kwh", label: "Exportación (kWh)", color: "#10b981" },
-    { key: "avg_soc_pct", label: "Batería promedio (%)", color: "#8b5cf6" },
-    { key: "net_cost", label: "Costo neto ($)", color: "#f97316" },
-  ];
+    const metrics = [
+    { key: "generation_kwh", label: "Generation (kWh)", color: "#f59e0b" },
+    { key: "load_kwh", label: "Consumption (kWh)", color: "#3b82f6" },
+    { key: "import_kwh", label: "Import (kWh)", color: "#ef4444" },
+    { key: "export_kwh", label: "Export (kWh)", color: "#10b981" },
+    { key: "avg_soc_pct", label: "Average battery (%)", color: "#8b5cf6" },
+    { key: "net_cost", label: "Net cost ($)", color: "#f97316" },
+    ];
 
   useEffect(() => {
     if (!svgRef.current || !containerRef.current) return;
@@ -146,7 +146,7 @@ export default function WealthLevelChart() {
     <div ref={containerRef} style={{ width: "100%" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10, flexWrap: "wrap", gap: 6 }}>
         <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "#1e293b" }}>
-          Por nivel de riqueza
+          By wealth level
         </h3>
         <select
           value={metric}

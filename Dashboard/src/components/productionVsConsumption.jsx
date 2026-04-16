@@ -123,8 +123,8 @@ export default function ProductionVsConsumption() {
       .append("g")
       .attr("transform", `translate(${margin.left + 10},${height - 10})`);
     [
-      { label: "Producción solar", color: "#f59e0b" },
-      { label: "Consumo", color: "#3b82f6" },
+      { label: "Solar production", color: "#f59e0b" },
+      { label: "Consumption", color: "#3b82f6" },
     ].forEach((item, i) => {
       const gItem = leg.append("g").attr("transform", `translate(${i * 150},0)`);
       gItem
@@ -170,7 +170,7 @@ export default function ProductionVsConsumption() {
           .style("top", event.clientY - 10 + "px")
           .html(
             `<b>${d.label}</b><br/>${
-              d.key === "production" ? "Producción" : "Consumo"
+              d.key === "production" ? "Production" : "Consumption"
             }: <b>${d.value.toFixed(2)} kW</b>`
           );
       })
@@ -181,7 +181,7 @@ export default function ProductionVsConsumption() {
     <div ref={containerRef} style={{ width: "100%" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
         <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "#1e293b" }}>
-          Producción vs Consumo
+          Production vs Consumption
         </h3>
         <div style={{ display: "flex", gap: 6 }}>
           {["hour", "day"].map((v) => (
@@ -200,7 +200,7 @@ export default function ProductionVsConsumption() {
                 fontWeight: groupBy === v ? 600 : 400,
               }}
             >
-              {v === "hour" ? "Por hora" : "Por día"}
+              {v === "hour" ? "Hourly" : "Daily"}
             </button>
           ))}
         </div>

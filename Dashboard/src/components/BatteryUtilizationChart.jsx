@@ -63,7 +63,7 @@ export default function BatteryUtilizationChart() {
       .attr("text-anchor", "end")
       .attr("fill", "#ef4444")
       .attr("font-size", "10px")
-      .text("⚠ Zona crítica");
+      .text("Critical zone");
 
     g.append("text")
       .attr("x", innerW - 4)
@@ -71,7 +71,7 @@ export default function BatteryUtilizationChart() {
       .attr("text-anchor", "end")
       .attr("fill", "#10b981")
       .attr("font-size", "10px")
-      .text("✓ Zona óptima");
+      .text("Optimal zone");
 
     // Grid
     g.append("g")
@@ -193,13 +193,13 @@ export default function BatteryUtilizationChart() {
       .attr("y", y(avgSOC) - 4)
       .attr("fill", "#8b5cf6")
       .attr("font-size", "10px")
-      .text(`Promedio: ${avgSOC.toFixed(1)} kWh`);
+      .text(`Average: ${avgSOC.toFixed(1)} kWh`);
 
     // Legend
     const leg = svg.append("g").attr("transform", `translate(${margin.left},${height - 14})`);
     [
-      { label: "Estado de carga (SOC)", color: "#8b5cf6", dash: null },
-      { label: "Solar generado (escala)", color: "#f59e0b", dash: "5,3" },
+      { label: "State of charge (SOC)", color: "#8b5cf6", dash: null },
+      { label: "Solar generated (scaled)", color: "#f59e0b", dash: "5,3" },
     ].forEach((item, i) => {
       const gItem = leg.append("g").attr("transform", `translate(${i * 190},0)`);
       gItem
@@ -256,10 +256,10 @@ export default function BatteryUtilizationChart() {
           .style("left", event.clientX + 14 + "px")
           .style("top", event.clientY - 10 + "px")
           .html(
-            `<b>Día ${d.day} · ${String(d.hour).padStart(2, "0")}:00h</b><br/>
+            `<b>Day ${d.day} · ${String(d.hour).padStart(2, "0")}:00h</b><br/>
             SOC: <b>${d.battery_soc_kwh.toFixed(2)} kWh (${soc_pct}%)</b><br/>
             Solar: <b>${d.solar_kw_used.toFixed(2)} kW</b><br/>
-            Nube: <b>${(d.cloud_coverage_avg * 100).toFixed(0)}%</b>`
+            Cloud: <b>${(d.cloud_coverage_avg * 100).toFixed(0)}%</b>`
           );
       })
       .on("mouseleave", () => tooltip.style("display", "none"));
@@ -269,7 +269,7 @@ export default function BatteryUtilizationChart() {
     <div ref={containerRef} style={{ width: "100%" }}>
       <div style={{ marginBottom: 10 }}>
         <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "#1e293b" }}>
-          Utilización de batería
+          Battery utilization
         </h3>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 8, flexWrap: "wrap" }}>
           <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#64748b" }}>
@@ -279,11 +279,11 @@ export default function BatteryUtilizationChart() {
               onChange={(e) => setShowAll(e.target.checked)}
               style={{ accentColor: "#8b5cf6" }}
             />
-            Ver todo el mes
+            show full month
           </label>
           {!showAll && (
             <>
-              <span style={{ fontSize: 12, color: "#64748b" }}>Día {selectedDay}</span>
+              <span style={{ fontSize: 12, color: "#64748b" }}>Day {selectedDay}</span>
               <input
                 type="range"
                 min={1}

@@ -5,18 +5,18 @@ import rankData from "../../data/household_rankings.json";
 const COLORS = ["#10b981", "#3b82f6", "#f59e0b", "#ef4444"];
 
 const METRICS = [
-  { key: "total_generation_kwh", label: "Generación (kWh)" },
-  { key: "total_load_kwh", label: "Consumo (kWh)" },
-  { key: "total_import_kwh", label: "Importación (kWh)" },
-  { key: "total_export_kwh", label: "Exportación (kWh)" },
-  { key: "avg_soc_pct", label: "Batería promedio (%)" },
+  { key: "total_generation_kwh", label: "Generation (kWh)" },
+  { key: "total_load_kwh", label: "Consumption (kWh)" },
+  { key: "total_import_kwh", label: "Import (kWh)" },
+  { key: "total_export_kwh", label: "Export (kWh)" },
+  { key: "avg_soc_pct", label: "Average battery (%)" },
 ];
 
 const NAME_MAP = {
-  studio_low_01: "Estudio (Bajo)",
-  family_high_01: "Fam. pequeña (Alto)",
-  family_mid_01: "Fam. pequeña (Medio)",
-  large_luxury_01: "Fam. grande (Lujo)",
+  studio_low_01: "Studio (Low)",
+  family_high_01: "Small family (High)",
+  family_mid_01: "Small family (Medium)",
+  large_luxury_01: "Large family (Luxury)",
 };
 
 export default function HouseholdComparison() {
@@ -147,7 +147,7 @@ export default function HouseholdComparison() {
       .attr("text-anchor", "middle")
       .attr("font-size", "11px")
       .attr("fill", "#94a3b8")
-      .text("Valor relativo (100% = máximo)");
+      .text("Relative value (100% = max)");
 
     // Legend
     const leg = svg
@@ -200,7 +200,7 @@ export default function HouseholdComparison() {
           .style("left", event.clientX + 14 + "px")
           .style("top", event.clientY - 10 + "px")
           .html(
-            `<b>${d.household}</b><br/>Valor: <b>${d.raw.toFixed(2)}</b><br/>Relativo: <b>${d.norm.toFixed(1)}%</b>`
+            `<b>${d.household}</b><br/>Value: <b>${d.raw.toFixed(2)}</b><br/>Relative: <b>${d.norm.toFixed(1)}%</b>`
           );
       })
       .on("mouseleave", () => tooltip.style("display", "none"));
@@ -244,10 +244,10 @@ export default function HouseholdComparison() {
     <div ref={containerRef} style={{ width: "100%" }}>
       <div style={{ marginBottom: 10 }}>
         <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "#1e293b" }}>
-          Comparativa de hogares (valores relativos al máximo)
+          Household comparison (relative to maximum values)
         </h3>
         <p style={{ margin: "4px 0 0", fontSize: 12, color: "#94a3b8" }}>
-          Cada barra muestra el porcentaje del valor máximo entre los hogares para esa métrica
+          Each bar shows the percentage of the maximum value among households for that metric
         </p>
       </div>
       <svg ref={svgRef} style={{ width: "100%", overflow: "visible" }} />

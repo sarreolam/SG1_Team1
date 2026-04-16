@@ -139,7 +139,7 @@ export default function SurplusDeficitChart() {
       .attr("fill", "#10b981")
       .attr("font-size", "10px")
       .attr("font-weight", 600)
-      .text("↑ Superávit");
+      .text("Surplus");
 
     g.append("text")
       .attr("x", 6)
@@ -147,7 +147,7 @@ export default function SurplusDeficitChart() {
       .attr("fill", "#ef4444")
       .attr("font-size", "10px")
       .attr("font-weight", 600)
-      .text("↓ Déficit");
+      .text("Deficit");
 
     // Legend
     const leg = svg
@@ -155,9 +155,9 @@ export default function SurplusDeficitChart() {
       .attr("transform", `translate(${margin.left + 10},${height - 14})`);
 
     [
-      { label: "Superávit solar", color: "#10b981", rect: true },
-      { label: "Déficit solar", color: "#ef4444", rect: true },
-      { label: "Exportación a red", color: "#f59e0b", rect: false },
+        { label: "Solar surplus", color: "#10b981", rect: true },
+        { label: "Solar deficit", color: "#ef4444", rect: true },
+        { label: "Grid export", color: "#f59e0b", rect: false },
     ].forEach((item, i) => {
       const gItem = leg.append("g").attr("transform", `translate(${i * 155},0)`);
       if (item.rect) {
@@ -208,15 +208,15 @@ export default function SurplusDeficitChart() {
 
     g.selectAll(".bar")
       .on("mousemove", function (event, d) {
-        const sign = d.balance >= 0 ? "Superávit" : "Déficit";
+        const sign = d.balance >= 0 ? "Surplus" : "Deficit";
         tooltip
           .style("display", "block")
           .style("left", event.clientX + 14 + "px")
           .style("top", event.clientY - 10 + "px")
           .html(
             `<b>${d.label}</b><br/>${sign}: <b>${Math.abs(d.balance).toFixed(2)} kW</b><br/>
-            Exportado: <b>${d.export.toFixed(2)} kW</b><br/>
-            Importado: <b>${d.import.toFixed(2)} kW</b>`
+            Exported: <b>${d.export.toFixed(2)} kW</b><br/>
+            Imported: <b>${d.import.toFixed(2)} kW</b>`
           );
       })
       .on("mouseleave", () => tooltip.style("display", "none"));
@@ -226,7 +226,7 @@ export default function SurplusDeficitChart() {
     <div ref={containerRef} style={{ width: "100%" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
         <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "#1e293b" }}>
-          Superávit / Déficit energético
+          Energy surplus / deficit
         </h3>
         <div style={{ display: "flex", gap: 6 }}>
           {["daily", "hourly"].map((v) => (
@@ -245,7 +245,7 @@ export default function SurplusDeficitChart() {
                 fontWeight: view === v ? 600 : 400,
               }}
             >
-              {v === "daily" ? "Por día" : "Por hora"}
+              {v === "daily" ? "Daily" : "Hourly"}
             </button>
           ))}
         </div>

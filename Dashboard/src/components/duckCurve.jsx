@@ -178,10 +178,10 @@ export default function DuckCurve() {
 
     // Legend
     const legend = [
-      { label: "Demand total", color: "#3b82f6", dash: null },
-      { label: "Solar generado", color: "#f59e0b", dash: null },
-      { label: "Carga neta (Duck)", color: "#10b981", dash: "6,3" },
-      { label: "Promedio histórico", color: "#cbd5e1", dash: "5,4" },
+    { label: "Total demand", color: "#3b82f6", dash: null },
+    { label: "Solar generated", color: "#f59e0b", dash: null },
+    { label: "Net load (Duck)", color: "#10b981", dash: "6,3" },
+    { label: "Historical average", color: "#cbd5e1", dash: "5,4" },
     ];
 
     const leg = svg
@@ -247,10 +247,10 @@ export default function DuckCurve() {
           .style("left", event.clientX + 15 + "px")
           .style("top", event.clientY - 10 + "px")
           .html(
-            `<b>${String(d.hour).padStart(2, "0")}:00h — Día ${selectedDay}</b><br/>
-            🔵 Demanda: <b>${d.load_kw.toFixed(2)} kW</b><br/>
-            🟡 Solar: <b>${d.solar_kw_used.toFixed(2)} kW</b><br/>
-            🟢 Neta: <b>${d.net_load_kw.toFixed(2)} kW</b>`
+          `<b>${String(d.hour).padStart(2, "0")}:00h — Day ${selectedDay}</b><br/>
+          Demand: <b>${d.load_kw.toFixed(2)} kW</b><br/>
+          Solar: <b>${d.solar_kw_used.toFixed(2)} kW</b><br/>
+          Net: <b>${d.net_load_kw.toFixed(2)} kW</b>`
           );
       })
       .on("mouseleave", () => tooltip.style("display", "none"));
@@ -260,7 +260,7 @@ export default function DuckCurve() {
     <div ref={containerRef} style={{ width: "100%" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 12 }}>
         <label style={{ fontSize: 13, color: "#64748b", fontWeight: 500 }}>
-          Día {selectedDay} de {maxDay}
+            Day {selectedDay} of {maxDay}
         </label>
         <input
           type="range"

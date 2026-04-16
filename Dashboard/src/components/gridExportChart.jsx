@@ -4,9 +4,9 @@ import tsData from "../../data/timeseries_neighborhood.json";
 import hhData from "../../data/by_household_type.json";
 
 const HH_LABELS = {
-  studio: "Estudio",
-  small_family: "Fam. Pequeña",
-  large_family: "Fam. Grande",
+  studio: "Studio",
+  small_family: "Small family",
+  large_family: "Large family",
 };
 
 const HH_COLORS = {
@@ -160,7 +160,7 @@ export default function GridExportChart() {
       .attr("text-anchor", "middle")
       .attr("font-size", "10px")
       .attr("fill", "#94a3b8")
-      .text("kWh por día");
+      .text("kWh per day");
 
     // Mini summary bars at bottom
     const barAreaY = height - 28;
@@ -172,8 +172,8 @@ export default function GridExportChart() {
 
     const leg = svg.append("g").attr("transform", `translate(${margin.left},${height - 22})`);
     [
-      { label: "Importación red", color: "#ef4444" },
-      { label: "Exportación solar", color: "#10b981" },
+      { label: "Grid import", color: "#ef4444" },
+      { label: "Solar export", color: "#10b981" },
     ].forEach((item, i) => {
       const gItem = leg.append("g").attr("transform", `translate(${i * 160},0)`);
       gItem
@@ -228,9 +228,9 @@ export default function GridExportChart() {
           .style("left", event.clientX + 14 + "px")
           .style("top", event.clientY - 10 + "px")
           .html(
-            `<b>Día ${d.day}</b><br/>
-            Exportado: <b>${d.export.toFixed(3)} kWh</b><br/>
-            Importado: <b>${d.import.toFixed(3)} kWh</b>`
+            `<b>Day ${d.day}</b><br/>
+            Exported: <b>${d.export.toFixed(3)} kWh</b><br/>
+            Imported: <b>${d.import.toFixed(3)} kWh</b>`
           );
       })
       .on("mouseleave", () => tooltip.style("display", "none"));
@@ -239,12 +239,12 @@ export default function GridExportChart() {
   return (
     <div ref={containerRef} style={{ width: "100%" }}>
       <div style={{ marginBottom: 10 }}>
-        <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "#1e293b" }}>
-          Exportación e importación de red
-        </h3>
-        <p style={{ margin: "3px 0 0", fontSize: 12, color: "#94a3b8" }}>
-          Flujo diario de energía hacia/desde la red eléctrica
-        </p>
+      <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "#1e293b" }}>
+        Grid export and import
+      </h3>
+      <p style={{ margin: "3px 0 0", fontSize: 12, color: "#94a3b8" }}>
+        Daily energy flow to/from the grid
+      </p>
       </div>
       <svg ref={svgRef} style={{ width: "100%", overflow: "visible" }} />
     </div>
