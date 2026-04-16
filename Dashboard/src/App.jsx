@@ -7,7 +7,6 @@ import HouseholdComparison from "./components/householdComparison";
 import WealthLevelChart from "./components/wealthLevelChart";
 import PeakTimes from "./components/peakTimes";
 import SurplusDeficitChart from "./components/surplusDeficitChart";
-import CostSavingsChart from "./components/CostSavingsChart";
 import GridExportChart from "./components/gridExportChart";
 
 function App() {

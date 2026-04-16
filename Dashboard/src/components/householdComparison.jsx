@@ -1,161 +1,256 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
-import sim_data from "../../../Simulation/Dashboard/data/all_energy_simulations.json";
+import rankData from "../../data/household_rankings.json";
 
-const HouseholdComparison = () => {
-  const ref = useRef();
+const COLORS = ["#10b981", "#3b82f6", "#f59e0b", "#ef4444"];
 
-  const [householdType, setHouseholdType] = useState("all");
-  const [wealthLevel, setWealthLevel] = useState("all");
+const METRICS = [
+  { key: "total_generation_kwh", label: "Generación (kWh)" },
+  { key: "total_load_kwh", label: "Consumo (kWh)" },
+  { key: "total_import_kwh", label: "Importación (kWh)" },
+  { key: "total_export_kwh", label: "Exportación (kWh)" },
+  { key: "avg_soc_pct", label: "Batería promedio (%)" },
+];
 
-  const householdTypes = useMemo(() => {
-    const values = sim_data.simulations.map((sim) => sim.metadata.household_type);
-    return ["all", ...new Set(values)];
-  }, []);
+const NAME_MAP = {
+  studio_low_01: "Estudio (Bajo)",
+  family_high_01: "Fam. pequeña (Alto)",
+  family_mid_01: "Fam. pequeña (Medio)",
+  large_luxury_01: "Fam. grande (Lujo)",
+};
 
-  const wealthLevels = useMemo(() => {
-    const values = sim_data.simulations.map((sim) => sim.metadata.wealth_level);
-    return ["all", ...new Set(values)];
-  }, []);
+export default function HouseholdComparison() {
+  const svgRef = useRef(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
-    const filteredSims = sim_data.simulations.filter((sim) => {
-      const matchesHousehold =
-        householdType === "all" || sim.metadata.household_type === householdType;
+    if (!svgRef.current || !containerRef.current) return;
 
-      const matchesWealth =
-        wealthLevel === "all" || sim.metadata.wealth_level === wealthLevel;
+    const width = containerRef.current.clientWidth || 700;
+    const height = 340;
+    const margin = { top: 20, right: 20, bottom: 60, left: 60 };
+    const innerW = width - margin.left - margin.right;
+    const innerH = height - margin.top - margin.bottom;
 
-      return matchesHousehold && matchesWealth;
-    });
+    d3.select(svgRef.current).selectAll("*").remove();
 
-    const chartData = filteredSims.map((sim) => ({
-      label: sim.id,
-      production: d3.sum(sim.timeseries, (d) => d.solar_kw),
-      consumption: d3.sum(sim.timeseries, (d) => d.load_kw),
-    }));
-
-    const subgroups = ["production", "consumption"];
-    const colors = { production: "#f0c040", consumption: "#e07b39" };
-
-    const margin = { top: 30, right: 30, bottom: 80, left: 65 };
-    const width = 560 - margin.left - margin.right;
-    const height = 320 - margin.top - margin.bottom;
-
-    const svg = d3
-      .select(ref.current)
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom);
-
-    svg.selectAll("*").remove();
-
-    if (chartData.length === 0) {
-      svg
-        .append("text")
-        .attr("x", 20)
-        .attr("y", 40)
-        .style("fill", "#ccc")
-        .style("font-size", "14px")
-        .text("No data for this filter.");
-      return;
-    }
-
+    const svg = d3.select(svgRef.current).attr("width", width).attr("height", height);
     const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+
+    const households = rankData.map((d) => ({
+      ...d,
+      name: NAME_MAP[d.household_name] || d.household_name,
+    }));
 
     const x0 = d3
       .scaleBand()
-      .domain(chartData.map((d) => d.label))
-      .range([0, width])
-      .padding(0.3);
+      .domain(METRICS.map((m) => m.label))
+      .range([0, innerW])
+      .paddingInner(0.18)
+      .paddingOuter(0.08);
 
     const x1 = d3
       .scaleBand()
-      .domain(subgroups)
+      .domain(households.map((h) => h.name))
       .range([0, x0.bandwidth()])
-      .padding(0.05);
+      .padding(0.06);
 
-    const maxValue = d3.max(chartData, (d) => Math.max(d.production, d.consumption));
+    // Normalize each metric separately
+    const yScales = {};
+    METRICS.forEach((m) => {
+      const maxVal = d3.max(households, (h) => h[m.key]);
+      yScales[m.key] = d3.scaleLinear().domain([0, maxVal * 1.12]).nice().range([innerH, 0]);
+    });
 
-    const y = d3
-      .scaleLinear()
-      .domain([0, maxValue * 1.15])
-      .nice()
-      .range([height, 0]);
+    // We'll use a shared y scale based on normalized (0-100) values for grouped view
+    const yShared = d3.scaleLinear().domain([0, 100]).range([innerH, 0]);
 
+    // Normalize values to 0-100 per metric
+    const normalized = METRICS.map((m) => {
+      const maxVal = d3.max(households, (h) => h[m.key]);
+      return households.map((h) => ({
+        metric: m.label,
+        metricKey: m.key,
+        household: h.name,
+        raw: h[m.key],
+        norm: maxVal > 0 ? (h[m.key] / maxVal) * 100 : 0,
+      }));
+    }).flat();
+
+    // Grid
     g.append("g")
-      .attr("transform", `translate(0,${height})`)
-      .call(d3.axisBottom(x0))
-      .selectAll("text")
-      .attr("transform", "rotate(-25)")
-      .style("text-anchor", "end");
+      .call(d3.axisLeft(yShared).ticks(5).tickSize(-innerW).tickFormat(""))
+      .call((g) => g.select(".domain").remove())
+      .call((g) =>
+        g.selectAll(".tick line").attr("stroke", "#e2e8f0").attr("stroke-dasharray", "3,3")
+      );
 
-    g.append("g")
-      .call(d3.axisLeft(y).ticks(5).tickFormat((d) => `${d.toFixed(0)} kW`));
+    // Draw bars
+    const metricGroups = g
+      .selectAll(".metric-group")
+      .data(METRICS)
+      .join("g")
+      .attr("class", "metric-group")
+      .attr("transform", (d) => `translate(${x0(d.label)},0)`);
 
-    const groups = g
-      .selectAll("g.group")
-      .data(chartData)
-      .enter()
-      .append("g")
-      .attr("class", "group")
-      .attr("transform", (d) => `translate(${x0(d.label)}, 0)`);
-
-    groups
+    metricGroups
       .selectAll("rect")
-      .data((d) => subgroups.map((key) => ({ key, value: d[key] })))
-      .enter()
-      .append("rect")
-      .attr("x", (d) => x1(d.key))
-      .attr("y", (d) => y(d.value))
+      .data((m) =>
+        households.map((h) => {
+          const maxVal = d3.max(households, (hh) => hh[m.key]);
+          return {
+            household: h.name,
+            raw: h[m.key],
+            norm: maxVal > 0 ? (h[m.key] / maxVal) * 100 : 0,
+            metricKey: m.key,
+          };
+        })
+      )
+      .join("rect")
+      .attr("x", (d) => x1(d.household))
+      .attr("y", (d) => yShared(d.norm))
       .attr("width", x1.bandwidth())
-      .attr("height", (d) => height - y(d.value))
-      .attr("fill", (d) => colors[d.key])
-      .attr("rx", 3);
+      .attr("height", (d) => innerH - yShared(d.norm))
+      .attr("fill", (d, i) => COLORS[i % COLORS.length])
+      .attr("rx", 3)
+      .attr("opacity", 0.85);
 
-    const legend = g.append("g").attr("transform", `translate(${width - 140}, 0)`);
+    // X axis - metric labels
+    g.append("g")
+      .attr("transform", `translate(0,${innerH})`)
+      .call(d3.axisBottom(x0))
+      .call((g) => g.select(".domain").attr("stroke", "#cbd5e1"))
+      .call((g) =>
+        g
+          .selectAll(".tick text")
+          .attr("fill", "#475569")
+          .attr("font-size", "10px")
+          .call(wrapText, x0.bandwidth())
+      );
 
-    subgroups.forEach((key, i) => {
-      legend
+    // Y axis
+    g.append("g")
+      .call(
+        d3.axisLeft(yShared).ticks(5).tickFormat((d) => `${d.toFixed(0)}%`)
+      )
+      .call((g) => g.select(".domain").attr("stroke", "#cbd5e1"))
+      .call((g) =>
+        g.selectAll(".tick text").attr("fill", "#64748b").attr("font-size", "10px")
+      );
+
+    // Y axis label
+    svg
+      .append("text")
+      .attr("transform", `rotate(-90)`)
+      .attr("y", 12)
+      .attr("x", -(margin.top + innerH / 2))
+      .attr("text-anchor", "middle")
+      .attr("font-size", "11px")
+      .attr("fill", "#94a3b8")
+      .text("Valor relativo (100% = máximo)");
+
+    // Legend
+    const leg = svg
+      .append("g")
+      .attr("transform", `translate(${margin.left},${height - 14})`);
+
+    households.forEach((h, i) => {
+      const gItem = leg
+        .append("g")
+        .attr("transform", `translate(${i * (innerW / 4)},0)`);
+      gItem
         .append("rect")
-        .attr("x", 0)
-        .attr("y", i * 20)
         .attr("width", 12)
         .attr("height", 12)
-        .attr("fill", colors[key])
-        .attr("rx", 2);
-
-      legend
+        .attr("rx", 2)
+        .attr("fill", COLORS[i])
+        .attr("opacity", 0.85);
+      gItem
         .append("text")
         .attr("x", 16)
-        .attr("y", i * 20 + 10)
-        .style("font-size", "11px")
-        .text(key.charAt(0).toUpperCase() + key.slice(1));
+        .attr("y", 10)
+        .attr("fill", "#475569")
+        .attr("font-size", "10px")
+        .text(h.name);
     });
-  }, [householdType, wealthLevel]);
+
+    // Tooltip
+    const tooltip = d3
+      .select("body")
+      .selectAll(".hh-tooltip")
+      .data([null])
+      .join("div")
+      .attr("class", "hh-tooltip")
+      .style("position", "fixed")
+      .style("background", "rgba(15,23,42,0.92)")
+      .style("color", "#f8fafc")
+      .style("padding", "10px 14px")
+      .style("border-radius", "8px")
+      .style("font-size", "12px")
+      .style("pointer-events", "none")
+      .style("display", "none")
+      .style("z-index", "9999")
+      .style("line-height", "1.7");
+
+    metricGroups
+      .selectAll("rect")
+      .on("mousemove", function (event, d) {
+        tooltip
+          .style("display", "block")
+          .style("left", event.clientX + 14 + "px")
+          .style("top", event.clientY - 10 + "px")
+          .html(
+            `<b>${d.household}</b><br/>Valor: <b>${d.raw.toFixed(2)}</b><br/>Relativo: <b>${d.norm.toFixed(1)}%</b>`
+          );
+      })
+      .on("mouseleave", () => tooltip.style("display", "none"));
+
+    function wrapText(text, width) {
+      text.each(function () {
+        const t = d3.select(this);
+        const words = t.text().split(/\s+/).reverse();
+        let word,
+          line = [],
+          lineNumber = 0,
+          lineHeight = 1.1,
+          y = t.attr("y"),
+          dy = parseFloat(t.attr("dy") || 0);
+        let tspan = t
+          .text(null)
+          .append("tspan")
+          .attr("x", 0)
+          .attr("y", y)
+          .attr("dy", dy + "em");
+        while ((word = words.pop())) {
+          line.push(word);
+          tspan.text(line.join(" "));
+          if (tspan.node().getComputedTextLength() > width - 4) {
+            line.pop();
+            tspan.text(line.join(" "));
+            line = [word];
+            tspan = t
+              .append("tspan")
+              .attr("x", 0)
+              .attr("y", y)
+              .attr("dy", ++lineNumber * lineHeight + dy + "em")
+              .text(word);
+          }
+        }
+      });
+    }
+  }, []);
 
   return (
-    <div>
-      <div className="chart-filters">
-        <select value={householdType} onChange={(e) => setHouseholdType(e.target.value)}>
-          {householdTypes.map((type) => (
-            <option key={type} value={type}>
-              {type === "all" ? "All household types" : type}
-            </option>
-          ))}
-        </select>
-
-        <select value={wealthLevel} onChange={(e) => setWealthLevel(e.target.value)}>
-          {wealthLevels.map((level) => (
-            <option key={level} value={level}>
-              {level === "all" ? "All wealth levels" : level}
-            </option>
-          ))}
-        </select>
+    <div ref={containerRef} style={{ width: "100%" }}>
+      <div style={{ marginBottom: 10 }}>
+        <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "#1e293b" }}>
+          Comparativa de hogares (valores relativos al máximo)
+        </h3>
+        <p style={{ margin: "4px 0 0", fontSize: 12, color: "#94a3b8" }}>
+          Cada barra muestra el porcentaje del valor máximo entre los hogares para esa métrica
+        </p>
       </div>
-
-      <svg ref={ref} />
+      <svg ref={svgRef} style={{ width: "100%", overflow: "visible" }} />
     </div>
   );
-};
-
-export default HouseholdComparison;
+}

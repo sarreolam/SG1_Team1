@@ -1,101 +1,277 @@
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
-import sim_data from "../../../Simulation/Dashboard/data/all_energy_simulations.json";
+import duckData from "../../data/duck_curve.json";
 
-const DuckCurve = () => {
-    const ref = useRef();
-    const [householdType, setHouseholdType] = useState("all");
+export default function DuckCurve() {
+  const svgRef = useRef(null);
+  const containerRef = useRef(null);
+  const [selectedDay, setSelectedDay] = useState(1);
+  const [maxDay, setMaxDay] = useState(30);
 
-    const householdTypes = useMemo(() => {
-        const values = sim_data.simulations.map((sim) => sim.metadata.household_type);
-        return ["all", ...new Set(values)];
-    }, []);
+  useEffect(() => {
+    const days = [...new Set(duckData.map((d) => d.day))];
+    setMaxDay(Math.max(...days));
+  }, []);
 
-    const filteredSims = sim_data.simulations.filter((sim) =>
-        householdType === "all" || sim.metadata.household_type === householdType
-    );
+  useEffect(() => {
+    if (!svgRef.current || !containerRef.current) return;
 
-    useEffect(()=> {
-        const hours = d3.range(24);
+    const dayData = duckData.filter((d) => d.day === selectedDay);
 
-        const filteredSims = sim_data.simulations.filter((sim) =>
-            householdType === "all" || sim.metadata.household_type === householdType
-        );
+    // Also compute average across all days per hour
+    const avgByHour = Array.from({ length: 24 }, (_, h) => {
+      const hourRows = duckData.filter((d) => d.hour === h);
+      return {
+        hour: h,
+        load_kw: d3.mean(hourRows, (d) => d.load_kw),
+        solar_kw_used: d3.mean(hourRows, (d) => d.solar_kw_used),
+        net_load_kw: d3.mean(hourRows, (d) => d.net_load_kw),
+      };
+    });
 
-        const hourTotals = hours.map((h) => {
-            let totalSolar = 0, totalLoad = 0, count = 0;
+    const width = containerRef.current.clientWidth || 800;
+    const height = 340;
+    const margin = { top: 20, right: 30, bottom: 50, left: 60 };
+    const innerW = width - margin.left - margin.right;
+    const innerH = height - margin.top - margin.bottom;
 
-            filteredSims.forEach((sim) => {
-                const point = sim.timeseries.find((d) => d.hour === h);
-                if (point) { totalSolar += point.solar_kw; totalLoad += point.load_kw; count++; }
-            });
+    d3.select(svgRef.current).selectAll("*").remove();
 
-            return {
-                hour: h,
-                solar: count ? totalSolar / count : 0,
-                load: count ? totalLoad / count : 0,
-                net: count ? (totalLoad - totalSolar) / count : 0
-            };
-        });
+    const svg = d3
+      .select(svgRef.current)
+      .attr("width", width)
+      .attr("height", height);
 
-        const margin = { top: 30, right: 30, bottom: 50, left: 60 };
-        const width  = 560 - margin.left - margin.right;
-        const height = 320 - margin.top  - margin.bottom;
+    const g = svg
+      .append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
 
-        const svg = d3.select(ref.current)
-            .attr("width",  width  + margin.left + margin.right)
-            .attr("height", height + margin.top  + margin.bottom);
-        svg.selectAll("*").remove();
+    const x = d3.scaleLinear().domain([0, 23]).range([0, innerW]);
+    const allVals = [
+      ...dayData.map((d) => d.load_kw),
+      ...dayData.map((d) => d.net_load_kw),
+      ...dayData.map((d) => d.solar_kw_used),
+      0,
+    ];
+    const y = d3
+      .scaleLinear()
+      .domain([d3.min(allVals) * 0.95, d3.max(allVals) * 1.08])
+      .nice()
+      .range([innerH, 0]);
 
-        const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
-        const x = d3.scaleLinear().domain([0,23]).range([0, width]);
-        const y = d3.scaleLinear().domain([d3.min(hourTotals, (d)=> Math.min(d.net, d.solar, d.load)) * 1.1, d3.max(hourTotals, (d)=> Math.max(d.net, d.solar, d.load)) * 1.1]).nice().range([height, 0]);
-        g.append("line").attr("x1", 0).attr("x2", width).attr("y1", y(0)).attr("y2", y(0)).attr("stroke", "#CCCCCC").attr("stroke-dasharray", "4 3");
+    // Grid lines
+    g.append("g")
+      .attr("class", "grid")
+      .call(
+        d3
+          .axisLeft(y)
+          .ticks(6)
+          .tickSize(-innerW)
+          .tickFormat("")
+      )
+      .call((g) => g.select(".domain").remove())
+      .call((g) =>
+        g.selectAll(".tick line").attr("stroke", "#e2e8f0").attr("stroke-dasharray", "3,3")
+      );
 
-        const line = (key) => d3.line().x((d)=> x(d.hour)).y((d)=>y(d[key])).curve(d3.curveCatmullRom);
+    // Solar area fill
+    const areaSolar = d3
+      .area()
+      .x((d) => x(d.hour))
+      .y0(innerH)
+      .y1((d) => y(d.solar_kw_used))
+      .curve(d3.curveCatmullRom);
 
-        const series = [
-            { key: "load",  color: "#e07b39", label: "Load"       },
-            { key: "solar", color: "#f0c040", label: "Solar gen"  },
-            { key: "net",   color: "#4a90d9", label: "Net demand" },
-        ];
+    g.append("path")
+      .datum(dayData)
+      .attr("fill", "#fef08a")
+      .attr("opacity", 0.35)
+      .attr("d", areaArea(y, x, innerH));
 
-        series.forEach(({ key, color }) => {
-            g.append("path").datum(hourTotals).attr("fill", "none").attr("stroke", color).attr("stroke-width", key === "net" ? 2.5 : 1.5).attr("stroke-dasharray", key === "net" ? "none" : "5 3").attr("d", line(key));
-        });
+    function areaArea(y, x, innerH) {
+      return d3
+        .area()
+        .x((d) => x(d.hour))
+        .y0(innerH)
+        .y1((d) => y(d.solar_kw_used))
+        .curve(d3.curveCatmullRom)(dayData);
+    }
 
-        g.append("g").attr("transform", `translate(0,${height})`)
-            .call(d3.axisBottom(x).ticks(12).tickFormat((d) => `${d}:00`))
-            .selectAll("text").attr("transform", "rotate(-35)").style("text-anchor", "end");
+    // Lines
+    const lineLoad = d3
+      .line()
+      .x((d) => x(d.hour))
+      .y((d) => y(d.load_kw))
+      .curve(d3.curveCatmullRom);
 
-        g.append("g").call(d3.axisLeft(y).ticks(5).tickFormat((d) => `${d.toFixed(2)} kW`));
+    const lineSolar = d3
+      .line()
+      .x((d) => x(d.hour))
+      .y((d) => y(d.solar_kw_used))
+      .curve(d3.curveCatmullRom);
 
-        const legend = g.append("g").attr("transform", `translate(${width - 130}, 0)`);
-        series.forEach(({ label, color }, i) => {
-            legend.append("line")
-                .attr("x1", 0).attr("x2", 18)
-                .attr("y1", i * 20 + 6).attr("y2", i * 20 + 6)
-                .attr("stroke", color).attr("stroke-width", 2);
-            legend.append("text")
-                .attr("x", 22).attr("y", i * 20 + 10)
-                .style("font-size", "11px").text(label);
-            });
-    }, [householdType]);
+    const lineNet = d3
+      .line()
+      .x((d) => x(d.hour))
+      .y((d) => y(d.net_load_kw))
+      .curve(d3.curveCatmullRom);
 
-    return (
-        <div>
-            <div className="chart-filters">
-                <select value={householdType} onChange={(e) => setHouseholdType(e.target.value)}>
-                    {householdTypes.map((t) => (
-                        <option key={t} value={t}>
-                            {t === "all" ? "All household types" : t.replace(/_/g, " ")}
-                        </option>
-                    ))}
-                </select>
-            </div>
-            <svg ref={ref} />
-        </div>
-    );
+    // Avg net load (duck curve reference)
+    const lineAvgNet = d3
+      .line()
+      .x((d) => x(d.hour))
+      .y((d) => y(d.net_load_kw))
+      .curve(d3.curveCatmullRom);
+
+    g.append("path")
+      .datum(avgByHour)
+      .attr("fill", "none")
+      .attr("stroke", "#cbd5e1")
+      .attr("stroke-width", 1.5)
+      .attr("stroke-dasharray", "5,4")
+      .attr("d", lineAvgNet);
+
+    g.append("path")
+      .datum(dayData)
+      .attr("fill", "none")
+      .attr("stroke", "#3b82f6")
+      .attr("stroke-width", 2.5)
+      .attr("d", lineLoad);
+
+    g.append("path")
+      .datum(dayData)
+      .attr("fill", "none")
+      .attr("stroke", "#f59e0b")
+      .attr("stroke-width", 2.5)
+      .attr("d", lineSolar);
+
+    g.append("path")
+      .datum(dayData)
+      .attr("fill", "none")
+      .attr("stroke", "#10b981")
+      .attr("stroke-width", 2.5)
+      .attr("stroke-dasharray", "6,3")
+      .attr("d", lineNet);
+
+    // Axes
+    g.append("g")
+      .attr("transform", `translate(0,${innerH})`)
+      .call(
+        d3
+          .axisBottom(x)
+          .ticks(12)
+          .tickFormat((d) => `${String(d).padStart(2, "0")}:00`)
+      )
+      .call((g) => g.select(".domain").attr("stroke", "#cbd5e1"))
+      .call((g) => g.selectAll(".tick line").attr("stroke", "#cbd5e1"))
+      .call((g) =>
+        g.selectAll(".tick text").attr("fill", "#64748b").attr("font-size", "11px")
+      );
+
+    g.append("g")
+      .call(d3.axisLeft(y).ticks(6).tickFormat((d) => `${d.toFixed(1)} kW`))
+      .call((g) => g.select(".domain").attr("stroke", "#cbd5e1"))
+      .call((g) => g.selectAll(".tick line").attr("stroke", "#cbd5e1"))
+      .call((g) =>
+        g.selectAll(".tick text").attr("fill", "#64748b").attr("font-size", "11px")
+      );
+
+    // Legend
+    const legend = [
+      { label: "Demand total", color: "#3b82f6", dash: null },
+      { label: "Solar generado", color: "#f59e0b", dash: null },
+      { label: "Carga neta (Duck)", color: "#10b981", dash: "6,3" },
+      { label: "Promedio histórico", color: "#cbd5e1", dash: "5,4" },
+    ];
+
+    const leg = svg
+      .append("g")
+      .attr("transform", `translate(${margin.left + 10},${height - 14})`);
+
+    legend.forEach((item, i) => {
+      const gItem = leg.append("g").attr("transform", `translate(${i * 170},0)`);
+      gItem
+        .append("line")
+        .attr("x1", 0)
+        .attr("x2", 22)
+        .attr("y1", 0)
+        .attr("y2", 0)
+        .attr("stroke", item.color)
+        .attr("stroke-width", 2)
+        .attr("stroke-dasharray", item.dash || null);
+      gItem
+        .append("text")
+        .attr("x", 27)
+        .attr("y", 4)
+        .attr("fill", "#475569")
+        .attr("font-size", "11px")
+        .text(item.label);
+    });
+
+    // Tooltip
+    const tooltip = d3
+      .select("body")
+      .selectAll(".duck-tooltip")
+      .data([null])
+      .join("div")
+      .attr("class", "duck-tooltip")
+      .style("position", "fixed")
+      .style("background", "rgba(15,23,42,0.92)")
+      .style("color", "#f8fafc")
+      .style("padding", "10px 14px")
+      .style("border-radius", "8px")
+      .style("font-size", "12px")
+      .style("pointer-events", "none")
+      .style("display", "none")
+      .style("z-index", "9999")
+      .style("line-height", "1.7");
+
+    const bisect = d3.bisector((d) => d.hour).left;
+
+    svg
+      .append("rect")
+      .attr("width", innerW)
+      .attr("height", innerH)
+      .attr("transform", `translate(${margin.left},${margin.top})`)
+      .attr("fill", "none")
+      .attr("pointer-events", "all")
+      .on("mousemove", function (event) {
+        const [mx] = d3.pointer(event, this);
+        const hour = Math.round(x.invert(mx));
+        const idx = bisect(dayData, hour, 0);
+        const d = dayData[Math.min(idx, dayData.length - 1)];
+        if (!d) return;
+
+        tooltip
+          .style("display", "block")
+          .style("left", event.clientX + 15 + "px")
+          .style("top", event.clientY - 10 + "px")
+          .html(
+            `<b>${String(d.hour).padStart(2, "0")}:00h — Día ${selectedDay}</b><br/>
+            🔵 Demanda: <b>${d.load_kw.toFixed(2)} kW</b><br/>
+            🟡 Solar: <b>${d.solar_kw_used.toFixed(2)} kW</b><br/>
+            🟢 Neta: <b>${d.net_load_kw.toFixed(2)} kW</b>`
+          );
+      })
+      .on("mouseleave", () => tooltip.style("display", "none"));
+  }, [selectedDay]);
+
+  return (
+    <div ref={containerRef} style={{ width: "100%" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 12 }}>
+        <label style={{ fontSize: 13, color: "#64748b", fontWeight: 500 }}>
+          Día {selectedDay} de {maxDay}
+        </label>
+        <input
+          type="range"
+          min={1}
+          max={maxDay}
+          value={selectedDay}
+          onChange={(e) => setSelectedDay(Number(e.target.value))}
+          style={{ flex: 1, accentColor: "#10b981" }}
+        />
+      </div>
+      <svg ref={svgRef} style={{ width: "100%", overflow: "visible" }} />
+    </div>
+  );
 }
-
-export default DuckCurve;
