@@ -13,8 +13,167 @@ import GridExportChart from "./components/gridExportChart";
 function App() {
   return (
     <div className="dashboard-page">
+      <header className="dashboard-header">
+        <div>
+          <p className="dashboard-eyebrow">GREENGRID ENERGY ANALYTICS</p>
+          <h1>Neighborhood Solar Performance Dashboard</h1>
+          <p className="dashboard-subtitle">
+            Most households rely <i>heavily</i> on the city power grid during the most expensive
+            part of the day. What does this mean? Higher emissions, increasing pressure on the
+            power infrastructure, and most importantly, higher costs. 
+          </p>
+        </div>
+      </header>
+
+      <div style={{display:"flex", justifyContent:"center", margin:"20px"}}>
+        <div className="dashboard-insight-main">
+          <span className="insight-label">Key Insight</span>
+          <p>
+            But now, enter solar generation:
+            During the middle of the day, the solar panels can produce
+            enough energy for all household needs, and more.
+            By the time the rest of the households need to tap into the 
+            city grid, solar will have more than enough energy stored, maximizing savings.
+          </p>
+        </div>
+      </div>
       
-      <div className="project-info">
+      <main className="dashboard-content">
+        <section className="section-block">
+          <div className="section-title-row">
+            <div>
+              <p className="section-kicker">Core Pattern</p>
+              <h2>Duck Curve Overview</h2>
+            </div>
+            <p className="insight-label-hard">
+              This chart shows how solar production reshapes net demand
+              throughout the day and why evening hours remain the most critical: 
+              When others buy energy, solar panels tap in to their reserve.
+            </p>
+          </div>
+
+          <div className="card card-full">
+            <div className="chart-shell">
+              <DuckCurve />
+            </div>
+          </div>
+        </section>
+
+        <section className="section-block">
+          <div className="section-title-row">
+            <div>
+              <p className="section-kicker">Comparative Performance</p>
+              <h2>Consumption and Production Profiles</h2>
+            </div>
+            <p className="insight-label-hard">
+              Let's take a look at a typical household in a neighborhood:
+            </p>
+          </div>
+
+          <div className="grid-two">
+            <div className="card">
+              <div className="chart-shell">
+                <ProductionVsConsumption />
+              </div>
+            </div>
+
+            <div className="card">
+              <div className="chart-shell">
+                <WealthLevelChart />
+              </div>
+            </div>
+          </div>
+          <div>
+              <p className="insight-label-hard">
+                Here, the picture is painted in a clear way: Even the houses of highest usage can benefit from the addition of solar energy.
+                No matter the consumption level, the house can reach higher levels of production of energy than needed.
+              </p>
+          </div>
+          <div className="grid-one">
+            <div className="card">
+              <div className="chart-shell">
+                <HouseholdComparison />
+              </div>
+            </div>
+          </div>
+          <div className="shock">
+            <p>And the best part? The extra energy is sold, making you an extra source of income.</p>
+          </div>
+        </section>
+
+        <section className="section-block">
+          <div className="section-title-row">
+            <div>
+              <p className="section-kicker">Critical Timing</p>
+              <h2>Peak Load and Energy Balance</h2>
+            </div>
+            <p className="section-description">
+              Knowing when your energy use peaks allows you to reduce costs without reducing comfort.
+            </p>
+          </div>
+
+          <div className="grid-two">
+            <div className="card">
+              <div className="chart-shell">
+                <PeakTimes />
+              </div>
+            </div>
+
+            <div className="card">
+              <div className="chart-shell">
+                <SurplusDeficitChart />
+              </div>
+            </div>
+            
+          </div>
+          <div style={{display:"flex", justifyContent: "center"}}>
+              <p className="insight-label-hard">
+                Not only is solar capable of supplying you with what you need, it is capable of getting it before you need it.
+                No need to worry about not having enough saved, you will have plenty.
+              </p>
+            </div>
+        </section>
+
+        <section className="section-block">
+          <div className="section-title-row">
+            <div>
+              <p className="section-kicker">Economic and Grid Impact</p>
+              <h2>Operational Value</h2>
+            </div>
+            <p className="section-description">
+              Review the benefits of self-consumption, exported energy, and
+              battery behavior, and see why it is such a good choice.
+            </p>
+          </div>
+
+          <div className="grid-three operational">
+            <div className="card">
+              <div className="chart-shell compact">
+                <GridExportChart />
+              </div>
+            </div>
+
+            <div className="card">
+              <div className="chart-shell compact">
+                <BatteryUtilizationChart />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="section-block">
+          <div className="final-summary-card">
+            <p className="section-kicker">Executive Summary</p>
+            <h2>What the neighborhood data suggests</h2>
+            <p>
+              Solar adoption allows households to maintain the same energy reliability they are used to—while reducing costs and environmental impact.
+              By combining solar generation with smarter energy usage and storage, neighborhoods can transition from passive consumers to active energy
+              participants—benefiting both financially and sustainably; A win-win all the way. 
+            </p>
+          </div>
+        </section>
+
+        <div className="project-info">
         <h2>Solar Energy Simulation Dashboard</h2>
 
         <p className="project-sub">
@@ -54,151 +213,6 @@ function App() {
           View GitHub Repository →
         </a>
       </div>
-
-      <header className="dashboard-header">
-        <div>
-          <p className="dashboard-eyebrow">GREENGRID ENERGY ANALYTICS</p>
-          <h1>Neighborhood Solar Performance Dashboard</h1>
-          <p className="dashboard-subtitle">
-            Visual overview of household demand, solar generation, grid
-            dependence, and energy performance across the neighborhood.
-          </p>
-        </div>
-
-        <div className="dashboard-insight">
-          <span className="insight-label">Key Insight</span>
-          <p>
-            Solar generation reduces grid pressure during midday, but evening
-            demand still creates deficits, highlighting opportunities for
-            storage and demand shifting.
-          </p>
-        </div>
-      </header>
-
-      <main className="dashboard-content">
-        <section className="section-block">
-          <div className="section-title-row">
-            <div>
-              <p className="section-kicker">Core Pattern</p>
-              <h2>Duck Curve Overview</h2>
-            </div>
-            <p className="section-description">
-              This chart shows how solar production reshapes net demand
-              throughout the day and why evening hours remain the most critical.
-            </p>
-          </div>
-
-          <div className="card card-full">
-            <div className="chart-shell">
-              <DuckCurve />
-            </div>
-          </div>
-        </section>
-
-        <section className="section-block">
-          <div className="section-title-row">
-            <div>
-              <p className="section-kicker">Comparative Performance</p>
-              <h2>Consumption and Production Profiles</h2>
-            </div>
-            <p className="section-description">
-              Compare how household categories and wealth levels affect energy
-              usage, production, and overall pressure on the grid.
-            </p>
-          </div>
-
-          <div className="grid-two">
-            <div className="card">
-              <div className="chart-shell">
-                <ProductionVsConsumption />
-              </div>
-            </div>
-
-            <div className="card">
-              <div className="chart-shell">
-                <WealthLevelChart />
-              </div>
-            </div>
-          </div>
-
-          <div className="grid-one">
-            <div className="card">
-              <div className="chart-shell">
-                <HouseholdComparison />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="section-block">
-          <div className="section-title-row">
-            <div>
-              <p className="section-kicker">Critical Timing</p>
-              <h2>Peak Load and Energy Balance</h2>
-            </div>
-            <p className="section-description">
-              These views highlight when demand peaks, when solar output is
-              strongest, and where the neighborhood shifts into surplus or
-              deficit.
-            </p>
-          </div>
-
-          <div className="grid-two">
-            <div className="card">
-              <div className="chart-shell">
-                <PeakTimes />
-              </div>
-            </div>
-
-            <div className="card">
-              <div className="chart-shell">
-                <SurplusDeficitChart />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="section-block">
-          <div className="section-title-row">
-            <div>
-              <p className="section-kicker">Economic and Grid Impact</p>
-              <h2>Operational Value</h2>
-            </div>
-            <p className="section-description">
-              Review the benefits of self-consumption, exported energy, and
-              battery behavior to understand the value of local solar adoption.
-            </p>
-          </div>
-
-          <div className="grid-three operational">
-            <div className="card">
-              <div className="chart-shell compact">
-                <GridExportChart />
-              </div>
-            </div>
-
-            <div className="card">
-              <div className="chart-shell compact">
-                <BatteryUtilizationChart />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="section-block">
-          <div className="final-summary-card">
-            <p className="section-kicker">Executive Summary</p>
-            <h2>What the neighborhood data suggests</h2>
-            <p>
-              The simulation shows that distributed solar generation improves
-              daytime energy balance across the neighborhood, but late-day
-              consumption still pushes households back toward grid dependence.
-              The strongest opportunity for future optimization lies in battery
-              storage, smarter load timing, and targeted adoption strategies by
-              household type.
-            </p>
-          </div>
-        </section>
       </main>
     </div>
   );
