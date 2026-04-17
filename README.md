@@ -1,5 +1,9 @@
 ## Installation & Running the Simulation
 
+## Live Dashboard
+You can view the deployed dashboard here:  
+https://sarreolam.github.io/SG1_Team1/
+
 ### Prerequisites
 - **Python 3.10+** (3.11 recommended)
 - `pip` (comes with most Python installs)
