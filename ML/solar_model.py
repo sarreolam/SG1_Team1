@@ -27,7 +27,7 @@ DEFAULT_CITY = 'Squaw_Valley'
 
 # ── Paths ────────────────────────────────────────────────────────────────────
 SCRIPT_DIR   = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT = os.path.join(SCRIPT_DIR, '..', '..')
+PROJECT_ROOT = os.path.join(SCRIPT_DIR, './')
 DATASETS_DIR = os.path.join(PROJECT_ROOT, 'Datasets')
 MODEL_PATH   = os.path.join(SCRIPT_DIR, 'model_weights.json')
 

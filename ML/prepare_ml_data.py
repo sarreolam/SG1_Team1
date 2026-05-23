@@ -35,7 +35,7 @@ prefix = config['prefix']
 # ── Paths ────────────────────────────────────────────────────────────────────
 # From Simulation/DataPrep/, go up two levels to project root, then Datasets/
 SCRIPT_DIR  = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT = os.path.join(SCRIPT_DIR, '..', '..')
+PROJECT_ROOT = os.path.join(SCRIPT_DIR, './')
 DATASETS_DIR = os.path.join(PROJECT_ROOT, 'Datasets')
 
 # Find the city folder (handles slight name variations)

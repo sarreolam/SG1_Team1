@@ -43,7 +43,7 @@ CITY_CONFIG = {
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 SCRIPT_DIR   = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT = os.path.join(SCRIPT_DIR, '..', '..')
+PROJECT_ROOT = os.path.join(SCRIPT_DIR, './')
 DATASETS_DIR = os.path.join(PROJECT_ROOT, 'Datasets')
 ML_DIR       = os.path.join(SCRIPT_DIR, '..', 'ml')
 MODEL_PATH   = os.path.join(ML_DIR, 'model_weights.json')
