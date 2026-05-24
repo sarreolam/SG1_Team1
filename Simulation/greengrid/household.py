@@ -4,7 +4,7 @@ import random
 from dataclasses import dataclass, field
 from typing import List
 
-from .components import Battery, EnergyDispatcher, GridConnection, InverterFailureModel, LoadModel, SolarArray, WeatherModel
+from .components import Battery, EnergyDispatcher, GridConnection, InverterFailureModel, LoadModel, SolarArray, SolarArrayML, WeatherModel
 from .config import HouseholdConfig, InverterFailureConfig, SimulationConfig
 from .models import EventRecord, StepResult
 from .profiles import household_template, wealth_multiplier
@@ -35,7 +35,7 @@ class HouseholdSimulator:
     def __post_init__(self) -> None:
         template = household_template(self.config.household_type)
         self.battery = Battery(self.config.battery)
-        self.solar = SolarArray(self.config.solar)
+        self.solar = SolarArrayML(self.config.solar)
         self.weather = WeatherModel(self.simulation.season, self.rng)
         self.inverter = InverterFailureModel(self.inverter_failure, self.rng)
         self.dispatcher = EnergyDispatcher(self.simulation.strategy, self.grid)

@@ -182,3 +182,38 @@ class EnergyDispatcher:
             return result
 
         raise ValueError(f"Unsupported strategy: {self.strategy}")
+
+@dataclass
+class SolarArrayML:
+    """
+    Reemplaza SolarArray usando el modelo ML entrenado.
+    Mantiene la misma firma de generation_kw() para no romper household.py.
+    El cloud_coverage se ignora — el ML ya lo tiene baked-in en el weather data.
+    """
+    config: SolarConfig
+
+    def __post_init__(self) -> None:
+        from datetime import datetime
+        from ML.components_ml import SolarGeneratorML
+
+        self._ml = SolarGeneratorML(
+            panel_capacity_kw=self.config.panel_capacity_kw,
+            inverter_max_kw=self.config.inverter_max_output_kw,
+        )
+        self._sim_start = datetime(2006, 1, 1)
+
+    def generation_kw(
+        self,
+        env_now_min: int,
+        cloud_coverage: float = 0.0,   
+        inverter_down: bool = False,
+    ) -> tuple[float, float]:
+        if inverter_down:
+            return 0.0, 0.0
+
+        from datetime import timedelta
+        sim_dt = self._sim_start + timedelta(minutes=env_now_min)
+        predicted_kw = self._ml.get_power(sim_dt)
+
+        usable_kw = min(predicted_kw, self.config.inverter_max_output_kw)
+        return predicted_kw, usable_kw
