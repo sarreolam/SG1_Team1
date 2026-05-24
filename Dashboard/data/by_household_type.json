@@ -1,29 +1,29 @@
 [
   {
     "household_type": "large_family",
-    "generation_kwh": 424.542508,
+    "generation_kwh": 563.067234,
     "load_kwh": 1409.169055,
-    "import_kwh": 998.869595,
-    "export_kwh": 11.486251,
-    "avg_soc_pct": 10.82651388888889,
-    "net_cost": 7.388157
+    "import_kwh": 860.464339,
+    "export_kwh": 0.0,
+    "avg_soc_pct": 14.347638888888888,
+    "net_cost": 6.453491
   },
   {
     "household_type": "small_family",
-    "generation_kwh": 666.343422,
+    "generation_kwh": 822.805426,
     "load_kwh": 1139.935902,
-    "import_kwh": 573.017383,
-    "export_kwh": 75.649725,
-    "avg_soc_pct": 19.236048611111112,
-    "net_cost": 3.616776
+    "import_kwh": 384.736106,
+    "export_kwh": 18.681004,
+    "avg_soc_pct": 28.959166666666665,
+    "net_cost": 2.7174
   },
   {
     "household_type": "studio",
-    "generation_kwh": 271.164684,
+    "generation_kwh": 321.752708,
     "load_kwh": 241.082808,
-    "import_kwh": 40.381727,
-    "export_kwh": 54.028626,
-    "avg_soc_pct": 34.54815277777777,
-    "net_cost": -0.183388
+    "import_kwh": 6.019625,
+    "export_kwh": 65.372092,
+    "avg_soc_pct": 60.10136111111112,
+    "net_cost": -0.543203
   }
 ]
