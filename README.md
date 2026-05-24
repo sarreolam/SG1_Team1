@@ -35,8 +35,7 @@ pip install -r requirements.txt
 
 ## Run the simulation
 ```bash
-cd simulation
-py .\run_neighborhood.py   
+py .\Simulation\run_neighborhood.py
 ```
 
 ## Creating Custom Scenarios
@@ -84,9 +83,13 @@ You can define multiple households with different configurations (wealth level, 
 Create a run file that imports the scenario and executes the simulation:
 
 ```python
+import sys
+import os
+
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+
 from greengrid import NeighborhoodSimulation
 from scenarios.neighborhood_mix import SCENARIO
-
 
 if __name__ == "__main__":
     result = NeighborhoodSimulation(SCENARIO).run()
