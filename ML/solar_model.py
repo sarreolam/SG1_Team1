@@ -4,30 +4,29 @@ solar_model.py
 Multivariate Linear Regression with Gradient Descent — from scratch.
 No scikit-learn or ML libraries used.
 
-Supports all 7 California cities. The city is configured once at the
-top of this file (or passed via --city argument when run as a script).
+Predicts solar power output (MW) from weather features for Squaw Valley.
+Saves the trained weights to model_weights.json so the simulator can
+load them without retraining every run.
 
 Usage:
-    python solar_model.py                    # trains Squaw Valley (default)
-    python solar_model.py --city Squaw_Valley
-    python solar_model.py --city Squaw_Valley --eval
+    python solar_model.py           # train and save
+    python solar_model.py --eval    # train and show sample predictions
 """
 
 import numpy as np
 import pandas as pd
 import json, os, copy, math, sys
 
-# ── City config ──────────────────────────────────────────────────────────────
+# ── City config ───────────────────────────────────────────────────────────────
 CITY_CONFIG = {
-    'Squaw_Valley':    {'prefix': '189871', 'farm_mw': 112.9}
+    'Squaw_Valley': {'prefix': '189871', 'farm_mw': 112.9}
 }
 
-# ── Default city — change this to match your team's assigned city ────────────
 DEFAULT_CITY = 'Squaw_Valley'
 
 # ── Paths ────────────────────────────────────────────────────────────────────
 SCRIPT_DIR   = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT = os.path.join(SCRIPT_DIR, './')
+PROJECT_ROOT = os.path.join(SCRIPT_DIR, '..')
 DATASETS_DIR = os.path.join(PROJECT_ROOT, 'Datasets')
 MODEL_PATH   = os.path.join(SCRIPT_DIR, 'model_weights.json')
 
@@ -210,8 +209,4 @@ def train(city_name=DEFAULT_CITY, show_eval=False):
 
 
 if __name__ == '__main__':
-    city = DEFAULT_CITY
-    for i, arg in enumerate(sys.argv):
-        if arg == '--city' and i + 1 < len(sys.argv):
-            city = sys.argv[i + 1]
-    train(city, show_eval='--eval' in sys.argv)
+    train(DEFAULT_CITY, show_eval='--eval' in sys.argv)

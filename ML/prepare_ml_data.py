@@ -1,41 +1,38 @@
 """
 prepare_ml_data.py
 ------------------
-Merges and cleans the 4 dataset files for ANY California city into a
-single training-ready CSV for the linear regression model.
+Merges and cleans the 4 raw CSV files for Squaw Valley into a single
+training-ready file (merged_clean.csv) used to train the ML model.
 
-Handles:
-  - Timezone correction: Weather is UTC, Actual is Pacific (UTC-8)
-  - Mixed date formats: Berkeley uses dashes, others use slashes
-  - Different farm capacities per city (for correct MW scaling)
+What it does:
+  - Fixes the timezone: Weather data is in UTC, energy data is in Pacific (UTC-8)
+  - Resamples all files to the same 30-min interval
+  - Merges weather + actual energy + DA/HA4 predictions into one CSV
 
 Usage:
-    python prepare_ml_data.py                        # defaults to San Diego
-    python prepare_ml_data.py --city San_Diego
+    python prepare_ml_data.py
 
-Output: Datasets/<city_folder>/merged_clean.csv
+Output: Datasets/189871_Squaw_Valley_2006/merged_clean.csv
 """
 
 import pandas as pd
 import numpy as np
 import os
-import sys
 
 # ── City config ─────────────────────────────────────────────────────────────
 CITY_CONFIG = {
     'Squaw_Valley':   {'prefix': '189871', 'farm_mw': 112.9}
 }
 
-# ── Parse city argument ──────────────────────────────────────────────────────
 city_name = 'Squaw_Valley'
-config = CITY_CONFIG[city_name]
-farm_mw = config['farm_mw']
-prefix = config['prefix']
+config    = CITY_CONFIG[city_name]
+farm_mw   = config['farm_mw']
+prefix    = config['prefix']
 
 # ── Paths ────────────────────────────────────────────────────────────────────
 # From Simulation/DataPrep/, go up two levels to project root, then Datasets/
 SCRIPT_DIR  = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT = os.path.join(SCRIPT_DIR, './')
+PROJECT_ROOT = os.path.join(SCRIPT_DIR, '..')
 DATASETS_DIR = os.path.join(PROJECT_ROOT, 'Datasets')
 
 # Find the city folder (handles slight name variations)
@@ -44,8 +41,7 @@ city_folder = next(
     None
 )
 if city_folder is None:
-    print(f"Could not find folder for city '{city_name}' in {DATASETS_DIR}")
-    sys.exit(1)
+    raise FileNotFoundError(f"Could not find folder for city '{city_name}' in {DATASETS_DIR}")
 
 CITY_DIR    = os.path.join(DATASETS_DIR, city_folder)
 ACTUAL_PATH  = os.path.join(CITY_DIR, f'{prefix}_Actual_DPV_{int(farm_mw*1000/1000*1000):.0f}MW_5m.csv')
@@ -54,12 +50,18 @@ DA_PATH      = os.path.join(CITY_DIR, f'{prefix}_DA_DPV_{int(farm_mw*1000/1000*1
 HA4_PATH     = os.path.join(CITY_DIR, f'{prefix}_HA4_DPV_{int(farm_mw*1000/1000*1000):.0f}MW_60m.csv')
 OUTPUT_PATH  = os.path.join(CITY_DIR, 'merged_clean.csv')
 
-# Simpler: just find files by keyword
+# Simpler: just find files by keyword (ahora case-insensitive)
 def find_file(folder, keyword):
-    matches = [f for f in os.listdir(folder) if keyword in f]
+    # Comparamos todo en minúsculas para evitar errores de tipeo en los nombres
+    matches = [f for f in os.listdir(folder) if keyword.lower() in f.lower()]
     if not matches:
         raise FileNotFoundError(f"No file with '{keyword}' in {folder}")
     return os.path.join(folder, matches[0])
+    
+# Agrega este print para ver qué archivos hay realmente en la carpeta
+print(f"\n--- ARCHIVOS EN LA CARPETA ---")
+print(os.listdir(CITY_DIR))
+print("------------------------------\n")
 
 ACTUAL_PATH  = find_file(CITY_DIR, 'Actual')
 WEATHER_PATH = find_file(CITY_DIR, 'Weather')

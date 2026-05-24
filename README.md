@@ -33,6 +33,52 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
+---
+
+## Setting up the ML Model (run once before the simulation)
+
+The simulation uses a Linear Regression model trained on real weather data
+from Squaw Valley 2006. You need to run the following two steps once before
+running the simulation for the first time.
+
+**Step 1 — Place the dataset files**
+
+Make sure the folder `ML/Datasets/189871_Squaw_Valley_2006/` contains the
+four raw CSV files:
+- `189871_Actual_DPV_113MW_5m.csv`
+- `189871_DA_DPV_113MW_60m.csv`
+- `189871_HA4_DPV_113MW_60m.csv`
+- `189871_Weather_30m.csv`
+
+**Step 2 — Prepare the data**
+
+From the project root:
+```bash
+py .\ML\prepare_ml_data.py
+```
+
+This merges and cleans the raw CSVs into `ML/Datasets/189871_Squaw_Valley_2006/merged_clean.csv`.
+
+**Step 3 — Train the model**
+
+```bash
+py .\ML\solar_model.py
+```
+
+This trains the Linear Regression model using Gradient Descent and saves
+the weights to `ML/model_weights.json`. You should see training metrics
+printed in the terminal (RMSE, MAE, R²).
+
+To also see sample predictions after training:
+```bash
+py .\ML\solar_model.py --eval
+```
+
+Once these two steps are done, the simulation will automatically use the
+trained model via `ML/components_ml.py`.
+
+---
+
 ## Run the simulation
 ```bash
 py .\Simulation\run_neighborhood.py
@@ -152,4 +198,3 @@ npm run dev
 ```
 
 The dashboard will load the prepared JSON data and display the simulation results in real time 🎯
-

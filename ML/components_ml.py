@@ -3,9 +3,7 @@ components_ml.py
 ----------------
 Drop-in ML-powered solar generator for the Green Grid simulator.
 Replaces the hard-coded math.sin() solar generation with a trained
-Linear Regression model that uses real weather data.
-
-Supports all 7 California cities — set CITY below to match your team.
+Linear Regression model that uses real weather data from Squaw Valley.
 
 HOW TO USE IN household.py:
 ----------------------------
@@ -33,22 +31,20 @@ import os, sys, json
 import pandas as pd
 import numpy as np
 
-# ── CONFIGURE YOUR CITY HERE ─────────────────────────────────────────────────
+# ── City config ───────────────────────────────────────────────────────────────
 CITY = 'Squaw_Valley'
 
-# ── City metadata ─────────────────────────────────────────────────────────────
 CITY_CONFIG = {
-    'Squaw_Valley':    {'prefix': '189871', 'farm_mw': 112.9}
+    'Squaw_Valley': {'prefix': '189871', 'farm_mw': 112.9}
 }
 
-# ── Paths ─────────────────────────────────────────────────────────────────────
+# ── Paths — all files live together inside the ML/ folder ────────────────────
 SCRIPT_DIR   = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT = os.path.join(SCRIPT_DIR, './')
-DATASETS_DIR = os.path.join(PROJECT_ROOT, 'Datasets')
-ML_DIR       = os.path.join(SCRIPT_DIR, '..', 'ml')
-MODEL_PATH   = os.path.join(ML_DIR, 'model_weights.json')
+DATASETS_DIR = os.path.join(SCRIPT_DIR, '..', 'Datasets')
+MODEL_PATH   = os.path.join(SCRIPT_DIR, 'model_weights.json')
 
-sys.path.insert(0, ML_DIR)
+# solar_model.py is in the same ML/ folder as this file
+sys.path.insert(0, SCRIPT_DIR)
 from solar_model import SolarModel
 
 
@@ -101,7 +97,7 @@ class SolarGeneratorML:
             weather_csv = os.path.join(DATASETS_DIR, city_folder, 'merged_clean.csv')
             if not os.path.exists(weather_csv):
                 raise FileNotFoundError(
-                    f"merged_clean.csv missing. Run: python prepare_ml_data.py --city {city}"
+                    f"merged_clean.csv missing. Run: python prepare_ml_data.py"
                 )
 
             SolarGeneratorML._weather_data = pd.read_csv(
