@@ -15,6 +15,7 @@ git clone https://github.com/sarreolam/SG1_Team1.git
 cd SG1_Team1
 ```
 
+### Create and activate a virtual environment
 Windows (CMD)
 ```bash
 python -m venv venv
@@ -27,10 +28,11 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-Install dependencies
+### Install dependencies
 ```bash
 pip install --upgrade pip
 pip install -r requirements.txt
+pip install matplotlib seaborn pandas numpy
 ```
 
 ---
@@ -76,6 +78,41 @@ py .\ML\solar_model.py --eval
 
 Once these two steps are done, the simulation will automatically use the
 trained model via `ML/components_ml.py`.
+
+---
+
+### Generating charts for the pitch
+
+To visualize the ML model's performance and generate the key visual insights used in the executive presentation, run the following plotting scripts.
+
+#### 1) Raw data storytelling charts
+
+These charts show the behavior of the cleaned weather and production data, including feature relationships, actual vs forecast comparison, and weather storylines.
+
+Important: this script uses relative paths, so run it from the dataset folder:
+
+```bash
+cd .\ML\Datasets\189871_Squaw_Valley_2006
+py .\raw_info_plots.py
+```
+
+Outputs:
+- `1_feature_relationships.png`
+- `2_actual_vs_predicted.png`
+- `3_weather_storytelling.png`
+
+#### 2) ML vs raw data comparison
+
+This script compares the model results and generates the summary chart for the ML section of the presentation.
+
+Run it from the project root:
+
+```bash
+py .\ML\ml_metrics_plots.py
+```
+
+Output:
+- `4_ml_model_comparison.png`
 
 ---
 

@@ -28,7 +28,7 @@ plt.rcParams.update({
 # 2. Data Loading & Preprocessing
 # ------------------------------------------------------------------
 print("Loading dataset...")
-df = pd.read_csv('merged_clean.csv')
+df = pd.read_csv('Datasets/189871_Squaw_Valley_2006/merged_clean.csv')
 df['dt'] = pd.to_datetime(df['dt'])
 
 # Filter data for daylight hours where generation occurs (is_daytime == 1)
